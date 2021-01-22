@@ -1,5 +1,0 @@
-float4 main(half2     coords   : TEX0,
-    uniform sampler2D texture) : COLOR
-{
-  return f4tex2D(texture, coords);
-} 
