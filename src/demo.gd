@@ -4,15 +4,18 @@ var solver = preload("solver.gd").new();
 onready var camera = get_node("Camera");
 onready var cursor = get_node("Cursor");
 
+var drawVel = false; # draw the velocty with out the velocty field disapating
+var uniformForce = Vector2(0.0, 0.0); # initial uniform force
+
 var N = 12
 var size = N + 2
 
 var dt = 0.1
 var diff = 0.0
 var visc = 0.0
-var force = 5.0
+var force = 1.0
 var source = 100.0
-var dvel = false
+var dvel = true
 
 var omx = 0.0
 var omy = 0.0
@@ -126,6 +129,12 @@ func _ready():
 	base.width = size + 1;
 	base.depth = size + 1;
 	cells = create_2d_instance(size, size, cell_scene, cell_parent);
+	
+	# uniform force field for testing
+	for i in range(0, size):
+		for j in range(0, size):
+			u[i][j] = uniformForce.y
+			v[i][j] = uniformForce.x
 
 
 func get_from_UI(d, u, v):
@@ -134,8 +143,10 @@ func get_from_UI(d, u, v):
 	for i in range(0, size):
 		for j in range(0, size):
 			d[i][j] = 0.0
-			u[i][j] = 0.0
-			v[i][j] = 0.0
+			
+			if (!drawVel):
+				u[i][j] = 0.0
+				v[i][j] = 0.0
 
 
 	if not mouse_down[0] and not mouse_down[1]:
@@ -149,14 +160,15 @@ func get_from_UI(d, u, v):
 		return
 
 	if mouse_down[0]:
-		var fx = force * (mx - omx);
-		var fy = force * -(my - omy);
+		# clamp here to stop force going to high on low fps
+		var fx = force * clamp(mx - omx, -1, 1);
+		var fy = force * clamp(my - omy, -1, 1);
 		
 		if (fx != 0 || fy != 0):
 			print("force:" + str(fx) + "," + str(fy));
 		
-		u[i][j] = fx
-		v[i][j] = fy
+		u[i][j] = fy
+		v[i][j] = fx
 
 	if mouse_down[1]:
 		d[i][j] = source
@@ -167,12 +179,17 @@ func get_from_UI(d, u, v):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	get_from_UI(dens_prev, u_prev, v_prev)
-	solver.vel_step(N, u, v, u_prev, v_prev, visc, dt)
+	# Draw into velocity for easy debugging
+	if (drawVel):
+		get_from_UI(dens_prev, u, v)
+	else:
+		get_from_UI(dens_prev, u_prev, v_prev)
+		solver.vel_step(N, u, v, u_prev, v_prev, visc, dt)
+		
 	solver.dens_step(N, dens, dens_prev, u, v, diff, dt)
 	
-	#if dvel:
-	draw_velocity();
+	if dvel:
+		draw_velocity();
 
 	draw_density();
 	
@@ -195,7 +212,7 @@ func draw_velocity():
 			#	print("we got somrthing!");
 				
 			var cell = cells[i][j];
-			cell.set_velocity(Vector3(u[i][j] * velocityScale, 0, v[i][j] * velocityScale));
+			cell.set_velocity(Vector3(v[i][j] * velocityScale, 0, -u[i][j] * velocityScale));
 			
 			#glColor3f(1, 0, 0)
 			#glVertex2f(x, y)

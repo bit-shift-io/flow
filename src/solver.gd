@@ -152,23 +152,22 @@ func dens_step(N, x, x0, u, v, diff, dt):
 	It implies advection, diffusion, addition of sources.
 	"""
 
+	# Add (x0 * dt) to x
+	# x0 is the previous density
 	add_source(N, x, x0, dt)
 	
-	# swap
+	# swap - is this swapping contents or what x and x0 point to?
 	var tmp = x;
 	x = x0;
 	x0 = tmp;
 	
-	#x0, x = x, x0  # swap
-	
-	diffuse(N, 0, x, x0, diff, dt)
+	diffuse(N, 0, x, x0, diff, dt)	
 	
 	# swap
 	tmp = x;
 	x = x0;
 	x0 = tmp;
 	
-	# x0, x = x, x0  # swap
 	advect(N, 0, x, x0, u, v, dt)
 
 
@@ -178,7 +177,12 @@ func vel_step(N, u, v, u0, v0, visc, dt):
 	It implies self-advection, viscous diffusion, addition of forces.
 	"""
 
+	# Add (u0 * dt) to u
+	# u0 is the previous velocity in x dimension
 	add_source(N, u, u0, dt)
+	
+	# Add (v0 * dt) to v
+	# v0 is the previous velocity in y dimension
 	add_source(N, v, v0, dt)
 	
 	# swap
