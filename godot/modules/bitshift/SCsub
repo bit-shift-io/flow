@@ -1,0 +1,81 @@
+#!/usr/bin/env python
+import sys
+import os
+import fnmatch
+import inspect
+import subprocess
+import multiprocessing
+import shutil
+import glob
+import functools
+import itertools
+
+Import('env')
+Import('env_modules')
+
+# run commands
+# params:
+# cwd
+# show_output
+# show cmd
+def run(command, params = {}):
+    # clean command
+    cmd = inspect.cleandoc(command)
+    
+    # show output
+    show_cmd = True
+    if 'show_cmd' in params:
+        show_cmd = params['show_cmd']
+
+    if show_cmd:
+        print(cmd + '\n')
+
+    # show output
+    show_output=True
+    if 'show_output' in params:
+        show_output = params['show_output']
+        
+    working_dir = os.getcwd()
+    if 'cwd' in params:
+        working_dir = params['cwd']
+        
+    # exec
+    if show_output:
+        subprocess.run(cmd, shell=True, cwd=working_dir)
+    
+    return
+
+
+# https://stackoverflow.com/questions/5351766/use-fnmatch-filter-to-filter-files-by-more-than-one-possible-file-extension
+# Remove the annotations if you're not on Python3
+def find_files(dir_path: str=None, patterns: [str]=None) -> [str]:
+    """
+    Returns a generator yielding files matching the given patterns
+    :type dir_path: str
+    :type patterns: [str]
+    :rtype : [str]
+    :param dir_path: Directory to search for files/directories under. Defaults to current dir.
+    :param patterns: Patterns of files to search for. Defaults to ["*"]. Example: ["*.json", "*.xml"]
+    """
+    path = dir_path or "."
+    path_patterns = patterns or ["*"]
+
+    for root_dir, dir_names, file_names in os.walk(path):
+        filter_partial = functools.partial(fnmatch.filter, file_names)
+
+        for file_name in itertools.chain(*map(filter_partial, path_patterns)):
+            yield os.path.join(root_dir, file_name)
+
+    return
+
+
+if True:
+
+    env_bitshift = env_modules.Clone()
+
+    # where to find dynamic libraries - on windows we need them next to the EXE anywa as delay load dll is not easy to configure in mingw
+    env.Append(LINKFLAGS=['-Wl,-rpath,.'])
+    env.Append(LINKFLAGS=['-Wl,-rpath,bin'])
+
+    # Add source files
+    env_bitshift.add_source_files(env.modules_sources, "*.cpp")

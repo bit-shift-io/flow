@@ -1,7 +1,7 @@
-extends Spatial
+extends Node3D
 
-onready var box = get_node("CSGBox");
-onready var geom = get_node("ImmediateGeometry");
+@onready var box = get_node("CSGBox");
+@onready var geom = get_node("ImmediateGeometry");
 
 var pressureAsHeight = true; # show pressure as height
 var velocity = Vector3(0, 0, 0);

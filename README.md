@@ -1,7 +1,7 @@
 # flow
 Experiments with liquids and flow
 
-Godot 3 project
+Godot 4 project
 
 
 # Research

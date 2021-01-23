@@ -1,0 +1,92 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // pip install scons if this doesn't work for you
+            // this allows you to debug the build scons system
+            "name": "Scons Build System",
+            "type": "python",
+            "request": "launch",
+            "program": "/bin/scons",
+            "cwd": "${workspaceRoot}",
+            "debugOptions": [
+                "WaitOnAbnormalExit",
+                "WaitOnNormalExit",
+                "RedirectOutput"
+            ]
+        },
+        {
+            "name": "Build and Run",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/godot.linuxbsd.tools.64",
+            "args": ["--editor", "--path", "../../Source"],
+            "preLaunchTask": "build",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "osx": {
+                "program": "${workspaceFolder}/bin/godot.osx.tools.64",
+                "MIMode": "lldb"
+            },
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },    
+        {
+            "name": "Run Editor",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/godot.linuxbsd.tools.64",
+            "args": ["--editor", "--path", "../../Source"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "osx": {
+                "program": "${workspaceFolder}/bin/godot.osx.tools.64",
+                "MIMode": "lldb"
+            },
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "Run Game",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/godot.linuxbsd.tools.64",
+            "args": ["--path", "../../Source"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "osx": {
+                "program": "${workspaceFolder}/bin/godot.osx.tools.64",
+                "MIMode": "lldb"
+            },
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }    
+    ]
+}

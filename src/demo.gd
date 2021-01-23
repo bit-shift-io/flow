@@ -1,8 +1,8 @@
 extends Node
 
 var solver = preload("solver.gd").new();
-onready var camera = get_node("Camera");
-onready var cursor = get_node("Cursor");
+@onready var camera = get_node("Camera");
+@onready var cursor = get_node("Cursor");
 
 var drawVel = false; # draw the velocty with out the velocty field disapating
 var uniformForce = Vector2(0.0, 0.0); # initial uniform force
@@ -24,9 +24,12 @@ var my = 0.0
 var mouse_down = [false, false]
 
 var cell_scene = load("res://cell.tscn")
-onready var cell_parent = get_node(".")
+
+@onready var cell_parent = $"." #get_node(".")
+
 var cells;
-onready var base = get_node("Base");
+
+@onready var base = $"Base" #get_node("Base");
 
 func create_2d(width, height):
 	var data = []
@@ -61,13 +64,13 @@ func create_2d_instance(width, height, scene, parent):
 
 	return a;
 			
-""" Start with two grids.
-One that contains the density values from the previous time step and one that
-will contain the new values. For each grid cell of the latter we trace the
-cell's center position backwards through the velocity field. We then linearly
-interpolate from the grid of previous density values and assign this value to
-the current grid cell.
-"""
+# Start with two grids.
+# One that contains the density values from the previous time step and one that
+# will contain the new values. For each grid cell of the latter we trace the
+# cell's center position backwards through the velocity field. We then linearly
+# interpolate from the grid of previous density values and assign this value to
+# the current grid cell.
+
 var u = create_2d(size, size)  # velocity
 var u_prev = create_2d(size, size)
 var v = create_2d(size, size)  # velocity

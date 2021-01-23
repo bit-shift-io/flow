@@ -1,0 +1,13 @@
+// Workspace settings
+{
+    // Hide the following
+    "files.exclude": {
+        "**/.*": true,
+        "**/*.o": true,
+        "**/*.a": true,
+        "**/*.po": true,
+        "**/*.xml": true,
+    },
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    //"workbench.editor.enablePreview": false,
+}
