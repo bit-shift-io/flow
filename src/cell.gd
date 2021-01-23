@@ -3,6 +3,7 @@ extends Spatial
 onready var box = get_node("CSGBox");
 onready var geom = get_node("ImmediateGeometry");
 
+var pressureAsHeight = true; # show pressure as height
 var velocity = Vector3(0, 0, 0);
 
 func set_velocity(v):
@@ -15,6 +16,11 @@ func set_velocity(v):
 	geom.add_vertex(Vector3(0,0,0));
 	geom.add_vertex(velocity);
 	geom.end();
+	
+func set_density(d):
+	set_color(Color(d, d, d));
+	if (pressureAsHeight):
+		box.height = max(d, 0.2);
 
 func set_color(col):
 	box.material_override.albedo_color = col;

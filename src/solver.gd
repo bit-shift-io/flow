@@ -15,14 +15,17 @@ func set_bnd(N, b, x):
 			x[0][i] = -x[1][i]
 		else:
 			x[0][i] = x[1][i]
+			
 		if b == 1:
 			x[N + 1][i] = -x[N][i]
 		else:
 			x[N + 1][i] = x[N][i]
+			
 		if b == 2:
 			x[i][0] = -x[i][1]
 		else:
 			x[i][0] = x[i][1]
+			
 		if b == 2:
 			x[i][N + 1] = -x[i][N]
 		else:
@@ -93,18 +96,20 @@ func advect(N, b, d, d0, u, v, dt):
 				x = N + 0.5
 			var i0 = int(x)
 			var i1 = i0 + 1
+			
 			if y < 0.5:
 				y = 0.5
 			if y > N + 0.5:
 				y = N + 0.5
 			var j0 = int(y)
 			var j1 = j0 + 1
+			
 			var s1 = x - i0
 			var s0 = 1 - s1
 			var t1 = y - j0
 			var t0 = 1 - t1
-			d[i][j] = (s0 * (t0 * d0[i0][j0] + t1 * d0[i0][j1]) + s1 *
-					   (t0 * d0[i1][j0] + t1 * d0[i1][j1]))
+			d[i][j] = s0 * (t0 * d0[i0][j0] + t1 * d0[i0][j1]) + s1 * (t0 * d0[i1][j0] + t1 * d0[i1][j1])
+	
 	set_bnd(N, b, d)
 
 
@@ -118,30 +123,15 @@ func project(N, u, v, p, div):
 			div[i][j] = -0.5 * h * (u[i+1][j] - u[i-1][j] + v[i][j+1] - v[i][j-1])
 			p[i][j] = 0;
 			
-			#div[IX(i,j)] = -0.5f*(u[IX(i+1,j)]-u[IX(i-1,j)]+v[IX(i,j+1)]-v[IX(i,j-1)])/N;
-			#p[IX(i,j)] = 0;
-		
-			#div[1:N + 1, 1:N + 1] = (-0.5 * h *
-			#				 (u[2:N + 2, 1:N + 1] - u[0:N, 1:N + 1] +
-			#				  v[1:N + 1, 2:N + 2] - v[1:N + 1, 0:N]))
-	#p[1:N + 1, 1:N + 1] = 0
-	
 	set_bnd(N, 0, div)
 	set_bnd(N, 0, p)
 	lin_solve(N, 0, p, div, 1, 4)
-	
 	
 	for i in range(1, N + 1):
 		for j in range(1, N + 1):
 			u[i][j] -= 0.5 * N * p[i+1][j] - p[i-1][j];
 			v[i][j] -= 0.5 * N * p[i][j+1] - p[i][j-1];
-			
-	#u[IX(i,j)] -= 0.5f*N*(p[IX(i+1,j)]-p[IX(i-1,j)]);
-	#v[IX(i,j)] -= 0.5f*N*(p[IX(i,j+1)]-p[IX(i,j-1)]);
-		
-	#u[1:N + 1, 1:N + 1] -= 0.5 * (p[2:N + 2, 1:N + 1] - p[0:N, 1:N + 1]) / h
-	#v[1:N + 1, 1:N + 1] -= 0.5 * (p[1:N + 1, 2:N + 2] - p[1:N + 1, 0:N]) / h
-	
+
 	set_bnd(N, 1, u)
 	set_bnd(N, 2, v)
 
@@ -170,19 +160,32 @@ func dens_step(N, x, x0, u, v, diff, dt):
 	
 	advect(N, 0, x, x0, u, v, dt)
 
-
-func vel_step(N, u, v, u0, v0, visc, dt):
+func check_if_velocity_increasing(N, u, v, u0, v0, velocityAllowedToIncrease):
+	if (velocityAllowedToIncrease):
+		return;
+		
+	var epsilon = 0.00001;
+	for i in range(1, N + 1):
+		for j in range(1, N + 1):
+			var uval = abs(u[i][j]);
+			var u0val = abs(u0[i][j]);
+			if ((uval - epsilon) > u0val):
+				print("unstable! force is increasing!");
+				
+			var vval = abs(v[i][j]);
+			var v0val = abs(v0[i][j]);
+			if ((vval - epsilon) > v0val):
+				print("unstable! force is increasing!");
+	
+	
+func vel_step(N, u, v, u0, v0, visc, dt, velocityAllowedToIncrease):
 	"""Evolving velocity.
 
 	It implies self-advection, viscous diffusion, addition of forces.
 	"""
 
-	# Add (u0 * dt) to u
-	# u0 is the previous velocity in x dimension
+	# Add the previous velocity (u0,v0) to the current velocity (u,v)
 	add_source(N, u, u0, dt)
-	
-	# Add (v0 * dt) to v
-	# v0 is the previous velocity in y dimension
 	add_source(N, v, v0, dt)
 	
 	# swap
@@ -190,19 +193,22 @@ func vel_step(N, u, v, u0, v0, visc, dt):
 	u = u0;
 	u0 = tmp;
 	
-	#u0, u = u, u0  # swap
-	
-	diffuse(N, 1, u, u0, visc, dt)
-	
 	# swap
 	tmp = v;
 	v = v0;
 	v0 = tmp;
 	
-	#v0, v = v, v0  # swap
-	
+	# Diffuse the velocity
+	diffuse(N, 1, u, u0, visc, dt)
 	diffuse(N, 2, v, v0, visc, dt)
+	
+	
+	# what does this do?
 	project(N, u, v, u0, v0)
+	
+	
+	#check_if_velocity_increasing(N, u, v, u0, v0, velocityAllowedToIncrease);
+	#return;
 	
 	# swap
 	tmp = u;
@@ -213,8 +219,10 @@ func vel_step(N, u, v, u0, v0, visc, dt):
 	v = v0;
 	v0 = tmp;
 	
-	#u0, u = u, u0  # swap
-	#v0, v = v, v0  # swap
+	# move the velocity along the velocity field?
 	advect(N, 1, u, u0, u0, v0, dt)
 	advect(N, 2, v, v0, u0, v0, dt)
+	
+	
+	# what does this do?
 	project(N, u, v, u0, v0)

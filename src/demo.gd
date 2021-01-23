@@ -13,7 +13,7 @@ var size = N + 2
 var dt = 0.1
 var diff = 0.0
 var visc = 0.0
-var force = 1.0
+var force = 5.0
 var source = 100.0
 var dvel = true
 
@@ -184,7 +184,7 @@ func _process(delta):
 		get_from_UI(dens_prev, u, v)
 	else:
 		get_from_UI(dens_prev, u_prev, v_prev)
-		solver.vel_step(N, u, v, u_prev, v_prev, visc, dt)
+		solver.vel_step(N, u, v, u_prev, v_prev, visc, dt, mouse_down[0])
 		
 	solver.dens_step(N, dens, dens_prev, u, v, diff, dt)
 	
@@ -230,15 +230,15 @@ func draw_density():
 		for j in range(1, N + 1):
 			var y = (j - 0.5) * h
 			var d00 = dens[i][j]
-			var d01 = dens[i][j + 1]
-			var d10 = dens[i + 1][j]
-			var d11 = dens[i + 1][j + 1]
+			#var d01 = dens[i][j + 1]
+			#var d10 = dens[i + 1][j]
+			#var d11 = dens[i + 1][j + 1]
 
 			#if (d00 != 0):
 			#	print("we got somrthing!");
 				
 			var cell = cells[i][j];
-			cell.set_color(Color(d00 * colourScale, d00 * colourScale, d00 * colourScale));
+			cell.set_density(d00 * colourScale);
 			
 			#glColor3f(d00, d00, d00)
 			#glVertex2f(x, y)
