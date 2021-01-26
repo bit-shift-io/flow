@@ -1,6 +1,6 @@
 extends Node3D
 
-@onready var box = get_node("CSGBox");
+@onready var box: CSGBox3D = get_node("CSGBox");
 @onready var geom = get_node("ImmediateGeometry");
 
 var pressureAsHeight = true; # show pressure as height
@@ -20,7 +20,7 @@ func set_velocity(v):
 func set_density(d):
 	set_color(Color(d, d, d));
 	if (pressureAsHeight):
-		box.height = max(d, 0.2);
+		box.size.y = max(d, 0.2);
 
 func set_color(col):
 	box.material_override.albedo_color = col;

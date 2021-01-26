@@ -4,6 +4,7 @@ var solver = preload("solver.gd").new();
 @onready var camera = get_node("Camera");
 @onready var cursor = get_node("Cursor");
 
+
 var drawVel = false; # draw the velocty with out the velocty field disapating
 var uniformForce = Vector2(0.0, 0.0); # initial uniform force
 
@@ -29,7 +30,7 @@ var cell_scene = load("res://cell.tscn")
 
 var cells;
 
-@onready var base = $"Base" #get_node("Base");
+@onready var base: CSGBox3D = $"Base" #get_node("Base");
 
 func create_2d(width, height):
 	var data = []
@@ -78,6 +79,18 @@ var v_prev = create_2d(size, size)
 var dens = create_2d(size, size)  # density
 var dens_prev = create_2d(size, size)
 
+func create_img_2d(width, height):
+	var i = Image.new();
+	i.create(width, height, false, Image.FORMAT_RF);
+	return i;
+
+var fsolver = FluidSolver.new();
+var fu = create_img_2d(size, size);
+var fu_prev = create_img_2d(size, size);
+var fv = create_img_2d(size, size);
+var fv_prev = create_img_2d(size, size);
+var fdens = create_img_2d(size, size);
+var fdens_prev = create_img_2d(size, size);
 
 	
 func clear_data():
@@ -129,8 +142,8 @@ func _input(event):
 	
 func _ready():
 	set_process_input(true);
-	base.width = size + 1;
-	base.depth = size + 1;
+	base.size.x = float(size) + 1.0;
+	base.size.z = float(size) + 1.0;
 	cells = create_2d_instance(size, size, cell_scene, cell_parent);
 	
 	# uniform force field for testing
@@ -180,15 +193,61 @@ func get_from_UI(d, u, v):
 	#omy = my
 
 
+func fget_from_UI(d: Image, u: Image, v: Image):
+	"""get_from_UI."""
+
+	for i in range(0, size):
+		for j in range(0, size):
+			d.set_pixel(i,j,Color(0, 0, 0)) #[i][j] = 0.0
+			
+			if (!drawVel):
+				u.set_pixel(i,j,Color(0, 0, 0)) # u[i][j] = 0.0
+				v.set_pixel(i,j,Color(0, 0, 0)) #v[i][j] = 0.0
+
+
+	if not mouse_down[0] and not mouse_down[1]:
+		return
+
+	# map mouse pos to grid space
+	var i = int(my);
+	var j = int(mx);
+
+	if i < 1 or i > N or j < 1 or j > N:
+		return
+
+	if mouse_down[0]:
+		# clamp here to stop force going to high on low fps
+		var fx = force * clamp(mx - omx, -1, 1);
+		var fy = force * clamp(my - omy, -1, 1);
+		
+		if (fx != 0 || fy != 0):
+			print("force:" + str(fx) + "," + str(fy));
+		
+		u.set_pixel(i,j,Color(fy, 0, 0)) #u[i][j] = fy
+		v.set_pixel(i,j,Color(fx, 0, 0)) #v[i][j] = fx
+
+	if mouse_down[1]:
+		d.set_pixel(i,j,Color(source, 0, 0)) # d[i][j] = source
+		
+	#omx = mx
+	#omy = my
+
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	# Draw into velocity for easy debugging
 	if (drawVel):
+		fget_from_UI(fdens_prev, fu, fv)
 		get_from_UI(dens_prev, u, v)
 	else:
+		fget_from_UI(fdens_prev, fu_prev, fv_prev)
+		fsolver.velocity_step(fu, fv, fu_prev, fv_prev, visc, dt)
+		
 		get_from_UI(dens_prev, u_prev, v_prev)
 		solver.vel_step(N, u, v, u_prev, v_prev, visc, dt, mouse_down[0])
 		
+	fsolver.density_step(fdens, fdens_prev, fu, fv, diff, dt);
 	solver.dens_step(N, dens, dens_prev, u, v, diff, dt)
 	
 	if dvel:
@@ -215,7 +274,9 @@ func draw_velocity():
 			#	print("we got somrthing!");
 				
 			var cell = cells[i][j];
-			cell.set_velocity(Vector3(v[i][j] * velocityScale, 0, -u[i][j] * velocityScale));
+			var v_val = fv.get_pixel(i,j).r; # v[i][j]
+			var u_val = -fu.get_pixel(i,j).r; # u[i][j]
+			cell.set_velocity(Vector3(v_val * velocityScale, 0, -u_val * velocityScale));
 			
 			#glColor3f(1, 0, 0)
 			#glVertex2f(x, y)
@@ -232,7 +293,7 @@ func draw_density():
 		var x = (i - 0.5) * h
 		for j in range(1, N + 1):
 			var y = (j - 0.5) * h
-			var d00 = dens[i][j]
+			var d00 = fdens.get_pixel(i,j) #dens[i][j]
 			#var d01 = dens[i][j + 1]
 			#var d10 = dens[i + 1][j]
 			#var d11 = dens[i + 1][j + 1]
@@ -241,7 +302,7 @@ func draw_density():
 			#	print("we got somrthing!");
 				
 			var cell = cells[i][j];
-			cell.set_density(d00 * colourScale);
+			cell.set_density(d00.r * colourScale);
 			
 			#glColor3f(d00, d00, d00)
 			#glVertex2f(x, y)

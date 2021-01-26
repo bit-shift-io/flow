@@ -3,6 +3,7 @@
 #include "core/variant/variant.h"
 #include "core/object/reference.h"
 #include "core/config/engine.h"
+#include "fluid_solver.h"
 
 static Vector<Variant> singletons;
 
@@ -24,7 +25,7 @@ void free_singletons() {
 }
 
 void register_bitshift_types() {
-    //ClassDB::register_class<BIRC>();
+    ClassDB::register_class<FluidSolver>();
     //instance_singleton<BUtil>("BUtil");
 }
 
