@@ -24,7 +24,15 @@ void FluidSolver::add_source(Ref<Image> x, const Ref<Image>& s, float dt) {
 	for (int yi = 0; yi < x->get_height(); ++yi) {
 		for (int xi = 0; xi < x->get_width(); ++xi) {
 			Color c = s->get_pixel(xi, yi);
-			x->set_pixel(xi, yi, c * dt);
+			c.r *= dt;
+
+
+			if (c.r > 0.f) {
+				int nothing = 0;
+				++nothing;
+			}
+
+			x->set_pixel(xi, yi, c);
 		}
 	}
 }
@@ -238,8 +246,10 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
 
 void FluidSolver::density_step(Ref<Image> x, Ref<Image> x0, Ref<Image> u, Ref<Image> v, float diff, float dt) {
 	add_source(x, x0, dt);
+	/*
 	SWAP ( x0, x ); diffuse (0, x, x0, diff, dt );
 	SWAP ( x0, x ); advect (0, x, x0, u, v, dt );
+	*/
 }
 
 void FluidSolver::velocity_step(Ref<Image> u, Ref<Image> v, Ref<Image> u0, Ref<Image> v0, float visc, float dt) {

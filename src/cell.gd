@@ -18,9 +18,18 @@ func set_velocity(v):
 	geom.end();
 	
 func set_density(d):
-	set_color(Color(d, d, d));
+	var new_d = d; #max(d, 0.2);
+	if (new_d == box.size.y):
+		return;
+		
+	if (new_d <= 0.0):
+		box.visible = false;
+		return;
+
+	box.visible = true;	
+	set_color(Color(d, 0, d));
 	if (pressureAsHeight):
-		box.size.y = max(d, 0.2);
+		box.size.y = new_d;
 
 func set_color(col):
 	box.material_override.albedo_color = col;

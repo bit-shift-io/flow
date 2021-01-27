@@ -39,4 +39,5 @@ velocity={
 
 [rendering]
 
+environment/default_clear_color=Color( 0.878431, 0.882353, 0.690196, 1 )
 environment/default_environment="res://default_env.tres"

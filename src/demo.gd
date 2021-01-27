@@ -8,7 +8,7 @@ var solver = preload("solver.gd").new();
 var drawVel = false; # draw the velocty with out the velocty field disapating
 var uniformForce = Vector2(0.0, 0.0); # initial uniform force
 
-var N = 12
+var N = 4
 var size = N + 2
 
 var dt = 0.1
@@ -267,15 +267,18 @@ func draw_velocity():
 		for j in range(1, N + 1):
 			var y = (j - 0.5) * h;
 			
-			#if (u[i][j] != 0):
-			#	print("we got somrthing!");
-				
-			#if (v[i][j] != 0):
-			#	print("we got somrthing!");
+			
 				
 			var cell = cells[i][j];
 			var v_val = fv.get_pixel(i,j).r; # v[i][j]
 			var u_val = -fu.get_pixel(i,j).r; # u[i][j]
+			
+			if (v_val != 0.0):
+				print("we got v vel:", v_val);
+				
+			if (u_val != 0.0):
+				print("we got u vel:", u_val);
+			
 			cell.set_velocity(Vector3(v_val * velocityScale, 0, -u_val * velocityScale));
 			
 			#glColor3f(1, 0, 0)
@@ -293,13 +296,16 @@ func draw_density():
 		var x = (i - 0.5) * h
 		for j in range(1, N + 1):
 			var y = (j - 0.5) * h
+			
+			#fdens.set_pixel(i, j, Color(80.0, 0, 0));
+			
 			var d00 = fdens.get_pixel(i,j) #dens[i][j]
 			#var d01 = dens[i][j + 1]
 			#var d10 = dens[i + 1][j]
 			#var d11 = dens[i + 1][j + 1]
 
-			#if (d00 != 0):
-			#	print("we got somrthing!");
+			if (d00.r > 0.0):
+				print("we got density:", d00.r);
 				
 			var cell = cells[i][j];
 			cell.set_density(d00.r * colourScale);

@@ -1,8 +1,12 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://demo.gd" type="Script" id=1]
 [ext_resource path="res://cell.tscn" type="PackedScene" id=2]
 [ext_resource path="res://cursor.tscn" type="PackedScene" id=3]
+
+[sub_resource type="StandardMaterial3D" id=1]
+shading_mode = 0
+albedo_color = Color( 0.0352941, 0.686275, 0.835294, 1 )
 
 [node name="Map" type="Node3D"]
 script = ExtResource( 1 )
@@ -19,4 +23,7 @@ transform = Transform( 1, 0, 0, 0, 0.190792, 0.981631, 0, -0.981631, 0.190792, -
 script = null
 
 [node name="Base" type="CSGBox3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0 )
+size = Vector3( 1, 1, 1 )
+material = SubResource( 1 )
 script = null
