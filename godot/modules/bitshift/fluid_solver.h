@@ -17,6 +17,8 @@ protected:
            
 public:
 
+	void dump_image(const Ref<Image>& x);
+
 	void set_bnd(int b, Ref<Image> x);
 	void lin_solve(int b, Ref<Image> x, Ref<Image> x0, float a, float c);
 

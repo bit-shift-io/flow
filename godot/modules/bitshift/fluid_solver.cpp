@@ -1,9 +1,28 @@
 #include "fluid_solver.h"
 #include "globals.h"
-
+#include "core/string/ustring.h"
 
 #define FOR_EACH_CELL for ( i=1 ; i<=N ; i++ ) { for ( j=1 ; j<=N ; j++ ) {
 #define END_FOR }}
+
+
+void FluidSolver::dump_image(const Ref<Image>& x) {
+	for (int yi = 0; yi < x->get_height(); ++yi) {
+		String s = String::num(yi) + "| ";
+		for (int xi = 0; xi < x->get_width(); ++xi) {
+			Color c = x->get_pixel(xi, yi);
+			s += String::num(c.r, 1) + ",";
+
+			if (c.r > 0.f) {
+				int nothing = 0;
+				++nothing;
+			}
+		}
+		DEBUG_PRINT(s);
+	}
+	DEBUG_PRINT("");
+}
+
 
 /*
 
@@ -115,7 +134,25 @@ void FluidSolver::lin_solve(int b, Ref<Image> x, Ref<Image> x0, float a, float c
 	for ( k=0 ; k<20 ; k++ ) {
 		FOR_EACH_CELL
 			// TODO: HOW CAN THIS write to x while reading to x? no copy?! susms suspect!
-			Color col = (x0->get_pixel(i, j) + a*(x->get_pixel(i-1,j) + x->get_pixel(i+1,j) + x->get_pixel(i, j-1) + x->get_pixel(i,j+1)))/c;
+
+			Color prev = x0->get_pixel(i, j);
+			Color cur_left = x->get_pixel(i-1,j);
+			Color cur_right = x->get_pixel(i+1,j);
+			Color cur_up = x->get_pixel(i, j-1);
+			Color cur_down = x->get_pixel(i,j+1);
+			Color col = (prev + a*(cur_left + cur_right + cur_up + cur_down))/c;
+			
+
+			if (prev.r > 0.f) {
+				int nothing = 0;
+				++nothing;
+			}
+
+			if (col.r > 0.f) {
+				int nothing = 0;
+				++nothing;
+			}
+			
 			x->set_pixel(i, j, col);
 			//x[IX(i,j)] = (x0[IX(i,j)] + a*(x[IX(i-1,j)]+x[IX(i+1,j)]+x[IX(i,j-1)]+x[IX(i,j+1)]))/c;
 		END_FOR
@@ -246,10 +283,10 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
 
 void FluidSolver::density_step(Ref<Image> x, Ref<Image> x0, Ref<Image> u, Ref<Image> v, float diff, float dt) {
 	add_source(x, x0, dt);
-	/*
 	SWAP ( x0, x ); diffuse (0, x, x0, diff, dt );
 	SWAP ( x0, x ); advect (0, x, x0, u, v, dt );
-	*/
+
+	dump_image(x);
 }
 
 void FluidSolver::velocity_step(Ref<Image> u, Ref<Image> v, Ref<Image> u0, Ref<Image> v0, float visc, float dt) {

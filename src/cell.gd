@@ -29,7 +29,9 @@ func set_density(d):
 	box.visible = true;	
 	set_color(Color(d, 0, d));
 	if (pressureAsHeight):
-		box.size.y = new_d;
+		box.size.y = new_d * 0.5;
+		box.transform.origin = Vector3(0.0, new_d * 0.25, 0.0); # raise so bottom of box is at zero
+	
 
 func set_color(col):
 	box.material_override.albedo_color = col;

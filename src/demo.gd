@@ -290,7 +290,7 @@ func draw_density():
 	"""draw_density."""
 
 	var h = 1.0 / N
-	var colourScale = 0.1;
+	var colourScale = 1;
 
 	for i in range(1, N + 1):
 		var x = (i - 0.5) * h

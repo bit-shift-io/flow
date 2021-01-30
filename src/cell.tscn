@@ -14,4 +14,5 @@ material = SubResource( 1 )
 script = null
 
 [node name="ImmediateGeometry" type="ImmediateGeometry3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00503, 0 )
 script = null
