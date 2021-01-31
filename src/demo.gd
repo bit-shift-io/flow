@@ -32,6 +32,17 @@ var cells;
 
 @onready var base: CSGBox3D = $"Base" #get_node("Base");
 
+
+func create_arr(width, height):
+	var sz = width * height;
+	var p : PackedFloat32Array = "".split_floats("", false) # Hack to create PackedFloat32Array
+	#var p: PackedFloat32Array = PackedFloat32Array.new();
+	p.resize(sz);
+	for i in range(0, sz):
+		p[i] = 0.0;
+		
+	return p;
+	
 func create_2d(width, height):
 	var data = []
 	for y in range(height):
@@ -92,6 +103,13 @@ var fv_prev = create_img_2d(size, size);
 var fdens = create_img_2d(size, size);
 var fdens_prev = create_img_2d(size, size);
 
+var f2solver = FluidSolver2.new();
+var f2u = create_arr(size, size);
+var f2u_prev = create_arr(size, size);
+var f2v = create_arr(size, size);
+var f2v_prev = create_arr(size, size);
+var f2dens = create_arr(size, size);
+var f2dens_prev = create_arr(size, size);
 	
 func clear_data():
 	"""clear_data."""
