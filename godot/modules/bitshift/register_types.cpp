@@ -5,6 +5,7 @@
 #include "core/config/engine.h"
 #include "fluid_solver.h"
 #include "fluid_solver_2.h"
+#include "ut.h"
 
 static Vector<Variant> singletons;
 
@@ -28,7 +29,8 @@ void free_singletons() {
 void register_bitshift_types() {
     ClassDB::register_class<FluidSolver>();
     ClassDB::register_class<FluidSolver2>();
-    //instance_singleton<BUtil>("BUtil");
+    
+    instance_singleton<Ut>("Ut");
 }
 
 void unregister_bitshift_types() {

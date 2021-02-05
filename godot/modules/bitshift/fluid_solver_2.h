@@ -15,7 +15,7 @@ public:
 
 	//void dump_image(Ref<PackedFloat32Array> x);
 
-	void density_step(int N, PackedFloat32Array x, PackedFloat32Array x0, PackedFloat32Array u, PackedFloat32Array v, float diff, float dt);
+	void density_step(int N, const Variant& x, PackedFloat32Array x0, PackedFloat32Array u, PackedFloat32Array v, float diff, float dt);
 	void velocity_step(int N, PackedFloat32Array u, PackedFloat32Array v, PackedFloat32Array u0, PackedFloat32Array v0, float visc, float dt);
 
 	FluidSolver2();

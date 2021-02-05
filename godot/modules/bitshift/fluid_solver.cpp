@@ -286,7 +286,7 @@ void FluidSolver::density_step(Ref<Image> x, Ref<Image> x0, Ref<Image> u, Ref<Im
 	SWAP ( x0, x ); diffuse (0, x, x0, diff, dt );
 	SWAP ( x0, x ); advect (0, x, x0, u, v, dt );
 
-	dump_image(x);
+	//dump_image(x);
 }
 
 void FluidSolver::velocity_step(Ref<Image> u, Ref<Image> v, Ref<Image> u0, Ref<Image> v0, float visc, float dt) {

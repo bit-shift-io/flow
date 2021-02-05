@@ -1,9 +1,26 @@
 #include "fluid_solver_2.h"
+#include "globals.h"
 
 #define IX(i,j) ((i)+(N+2)*(j))
 #define SWAP(x0,x) {float * tmp=x0;x0=x;x=tmp;}
 #define FOR_EACH_CELL for ( i=1 ; i<=N ; i++ ) { for ( j=1 ; j<=N ; j++ ) {
 #define END_FOR }}
+
+
+
+void dump_array(int N, float * x) {
+	int i,j;
+	for ( i=1 ; i<=N ; i++ ) { 
+		String s = String::num(i) + "| ";
+		for ( j=1 ; j<=N ; j++ ) {
+
+			float v = x[IX(i,j)];
+			s += String::num(v, 1) + ",";
+		}
+		DEBUG_PRINT(s);
+	}
+	DEBUG_PRINT("");
+}
 
 void add_source ( int N, float * x, float * s, float dt )
 {
@@ -101,12 +118,28 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
 
 
 
-void FluidSolver2::density_step(int N, PackedFloat32Array x, PackedFloat32Array x0, PackedFloat32Array u, PackedFloat32Array v, float diff, float dt) {
-	const float *xptr = x.ptrw();
+void FluidSolver2::density_step(int N, const Variant& vx, PackedFloat32Array x0, PackedFloat32Array u, PackedFloat32Array v, float diff, float dt) {
+	// verify variant 
+	// TODO: https://godotengine.org/qa/94424/pass-packedfloat32array-between-c-and-gdscript
+	// the packed arrays we are getting are not being modified... we have copies but want references
+	if (vx.get_type() == Variant::PACKED_FLOAT32_ARRAY) {
+		DEBUG_PRINT("q");
+	}
+
+	PackedFloat32Array x = vx;
+	
+	const float *xptr = x.ptrw(); 
 	dens_step(N, x.ptrw(), x0.ptrw(), u.ptrw(), v.ptrw(), diff, dt);
+
+	// test returning a value:
+	x.ptrw()[IX(1, 1)] = 4.4444;
+	float r = x.ptrw()[IX(1, 1)];
+	DEBUG_PRINT("q");
 }
 
 void FluidSolver2::velocity_step(int N, PackedFloat32Array u, PackedFloat32Array v, PackedFloat32Array u0, PackedFloat32Array v0, float visc, float dt) {
+	dump_array(N, u0.ptrw());
+
 	vel_step(N, u.ptrw(), v.ptrw(), u0.ptrw(), v0.ptrw(), visc, dt);
 }
 
