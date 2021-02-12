@@ -1,11 +1,12 @@
 #ifndef FLUID_SOLVER_2_H
 #define FLUID_SOLVER_2_H
 
-#include "scene/3d/node_3d.h"
+#include "core/object/reference.h"
+#include "float_array.h"
 
-class FluidSolver2 : public Node3D {
+class FluidSolver2 : public Reference {
 
-	GDCLASS(FluidSolver2, Node3D)
+	GDCLASS(FluidSolver2, Reference)
        
 protected:
 
@@ -13,10 +14,10 @@ protected:
            
 public:
 
-	//void dump_image(Ref<PackedFloat32Array> x);
+	void dump_array(int N, Ref<FloatArray> x);
 
-	void density_step(int N, const Variant& x, PackedFloat32Array x0, PackedFloat32Array u, PackedFloat32Array v, float diff, float dt);
-	void velocity_step(int N, PackedFloat32Array u, PackedFloat32Array v, PackedFloat32Array u0, PackedFloat32Array v0, float visc, float dt);
+	void density_step(int N, Ref<FloatArray> x, Ref<FloatArray> x0, Ref<FloatArray> u, Ref<FloatArray> v, float diff, float dt);
+	void velocity_step(int N, Ref<FloatArray> u, Ref<FloatArray> v, Ref<FloatArray> u0, Ref<FloatArray> v0, float visc, float dt);
 
 	FluidSolver2();
 	~FluidSolver2();            

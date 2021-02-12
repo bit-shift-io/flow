@@ -3,9 +3,9 @@
 #include "core/variant/variant.h"
 #include "core/object/reference.h"
 #include "core/config/engine.h"
-#include "fluid_solver.h"
 #include "fluid_solver_2.h"
 #include "ut.h"
+#include "float_array.h"
 
 static Vector<Variant> singletons;
 
@@ -27,8 +27,8 @@ void free_singletons() {
 }
 
 void register_bitshift_types() {
-    ClassDB::register_class<FluidSolver>();
     ClassDB::register_class<FluidSolver2>();
+    ClassDB::register_class<FloatArray>();
     
     instance_singleton<Ut>("Ut");
 }

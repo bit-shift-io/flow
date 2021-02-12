@@ -117,35 +117,22 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
 }
 
 
-
-void FluidSolver2::density_step(int N, const Variant& vx, PackedFloat32Array x0, PackedFloat32Array u, PackedFloat32Array v, float diff, float dt) {
-	// verify variant 
-	// TODO: https://godotengine.org/qa/94424/pass-packedfloat32array-between-c-and-gdscript
-	// the packed arrays we are getting are not being modified... we have copies but want references
-	if (vx.get_type() == Variant::PACKED_FLOAT32_ARRAY) {
-		DEBUG_PRINT("q");
-	}
-
-	PackedFloat32Array x = vx;
-	
-	const float *xptr = x.ptrw(); 
-	dens_step(N, x.ptrw(), x0.ptrw(), u.ptrw(), v.ptrw(), diff, dt);
-
-	// test returning a value:
-	x.ptrw()[IX(1, 1)] = 4.4444;
-	float r = x.ptrw()[IX(1, 1)];
-	DEBUG_PRINT("q");
+void FluidSolver2::dump_array(int N, Ref<FloatArray> x) {
+	::dump_array(N, x->ptrw());
 }
 
-void FluidSolver2::velocity_step(int N, PackedFloat32Array u, PackedFloat32Array v, PackedFloat32Array u0, PackedFloat32Array v0, float visc, float dt) {
-	dump_array(N, u0.ptrw());
+void FluidSolver2::density_step(int N, Ref<FloatArray> x, Ref<FloatArray> x0, Ref<FloatArray> u, Ref<FloatArray> v, float diff, float dt) {
+	dens_step(N, x->ptrw(), x0->ptrw(), u->ptrw(), v->ptrw(), diff, dt);
+}
 
-	vel_step(N, u.ptrw(), v.ptrw(), u0.ptrw(), v0.ptrw(), visc, dt);
+void FluidSolver2::velocity_step(int N, Ref<FloatArray> u, Ref<FloatArray> v, Ref<FloatArray> u0, Ref<FloatArray> v0, float visc, float dt) {
+	vel_step(N, u->ptrw(), v->ptrw(), u0->ptrw(), v0->ptrw(), visc, dt);
 }
 
 void FluidSolver2::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("density_step"), &FluidSolver2::density_step);
 	ClassDB::bind_method(D_METHOD("velocity_step"), &FluidSolver2::velocity_step);
+	ClassDB::bind_method(D_METHOD("dump_array"), &FluidSolver2::dump_array);
 }
 
 FluidSolver2::FluidSolver2() {}

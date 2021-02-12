@@ -4,3 +4,4 @@ log.txt
 .import/
 *.o
 __pycache__
+.godot/

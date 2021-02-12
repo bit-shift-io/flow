@@ -1,9 +1,7 @@
 extends Node
 
-var solver = preload("solver.gd").new();
 @onready var camera = get_node("Camera");
 @onready var cursor = get_node("Cursor");
-
 
 var drawVel = false; # draw the velocty with out the velocty field disapating
 var uniformForce = Vector2(0.0, 0.0); # initial uniform force
@@ -32,29 +30,13 @@ var cells;
 
 @onready var base: CSGBox3D = $"Base" #get_node("Base");
 
-
 func create_arr(width, height):
 	var sz = width * height;
-	var p : PackedFloat32Array = PackedFloat32Array();
-	#var p: PackedFloat32Array = PackedFloat32Array.new();
+	var p : FloatArray = FloatArray.new();
 	p.resize(sz);
-	for i in range(0, sz):
-		p.set(i, 0.0);
-		
+	p.set_all(0.0);
 	return p;
 	
-func create_2d(width, height):
-	var data = []
-	for y in range(height):
-		data.append([])
-		data[y].resize(width)
-
-		for x in range(width):
-			data[y][x] = 0.0;
-			
-	return data;
-	
-
 func create_2d_instance(width, height, scene, parent):
 	var a = []
 	var hw = width / 2;
@@ -83,45 +65,24 @@ func create_2d_instance(width, height, scene, parent):
 # interpolate from the grid of previous density values and assign this value to
 # the current grid cell.
 
-var u = create_2d(size, size)  # velocity
-var u_prev = create_2d(size, size)
-var v = create_2d(size, size)  # velocity
-var v_prev = create_2d(size, size)
-var dens = create_2d(size, size)  # density
-var dens_prev = create_2d(size, size)
-
-func create_img_2d(width, height):
-	var i = Image.new();
-	i.create(width, height, false, Image.FORMAT_RF);
-	return i;
-
-var fsolver = FluidSolver.new();
-var fu = create_img_2d(size, size);
-var fu_prev = create_img_2d(size, size);
-var fv = create_img_2d(size, size);
-var fv_prev = create_img_2d(size, size);
-var fdens = create_img_2d(size, size);
-var fdens_prev = create_img_2d(size, size);
-
-var f2solver = FluidSolver2.new();
-var f2u = create_arr(size, size);
-var f2u_prev = create_arr(size, size);
-var f2v = create_arr(size, size);
-var f2v_prev = create_arr(size, size);
-var f2dens = create_arr(size, size);
-var f2dens_prev = create_arr(size, size);
+var solver = FluidSolver2.new();
+var u = create_arr(size, size);
+var u_prev = create_arr(size, size);
+var v = create_arr(size, size);
+var v_prev = create_arr(size, size);
+var dens = create_arr(size, size);
+var dens_prev = create_arr(size, size);
 	
 func clear_data():
 	"""clear_data."""
 	
-	for i in range(0, size):
-		for j in range(0, size):
-			u[i][j] = 0.0;
-			u_prev[i][j] = 0.0;
-			v[i][j] = 0.0;
-			v_prev[i][j] = 0.0;
-			dens[i][j] = 0.0;
-			dens_prev[i][j] = 0.0;
+	u.set_all(0.0);
+	u_prev.set_all(0.0);
+	v.set_all(0.0);
+	v_prev.set_all(0.0);
+	dens.set_all(0.0);
+	dens_prev.set_all(0.0);
+
 			
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -165,107 +126,21 @@ func _ready():
 	cells = create_2d_instance(size, size, cell_scene, cell_parent);
 	
 	# uniform force field for testing
-	for i in range(0, size):
-		for j in range(0, size):
-			u[i][j] = uniformForce.y
-			v[i][j] = uniformForce.x
+	u.set_all(uniformForce.y);
+	v.set_all(uniformForce.x);
 
-
-func get_from_UI(d, u, v):
-	"""get_from_UI."""
-
-	for i in range(0, size):
-		for j in range(0, size):
-			d[i][j] = 0.0
-			
-			if (!drawVel):
-				u[i][j] = 0.0
-				v[i][j] = 0.0
-
-
-	if not mouse_down[0] and not mouse_down[1]:
-		return
-
-	# map mouse pos to grid space
-	var i = int(my);
-	var j = int(mx);
-
-	if i < 1 or i > N or j < 1 or j > N:
-		return
-
-	if mouse_down[0]:
-		# clamp here to stop force going to high on low fps
-		var fx = force * clamp(mx - omx, -1, 1);
-		var fy = force * clamp(my - omy, -1, 1);
-		
-		if (fx != 0 || fy != 0):
-			print("force:" + str(fx) + "," + str(fy));
-		
-		u[i][j] = fy
-		v[i][j] = fx
-
-	if mouse_down[1]:
-		d[i][j] = source
-		
-	#omx = mx
-	#omy = my
-
-
-func fget_from_UI(d: Image, u: Image, v: Image):
-	"""get_from_UI."""
-
-	for i in range(0, size):
-		for j in range(0, size):
-			d.set_pixel(i,j,Color(0, 0, 0)) #[i][j] = 0.0
-			
-			if (!drawVel):
-				u.set_pixel(i,j,Color(0, 0, 0)) # u[i][j] = 0.0
-				v.set_pixel(i,j,Color(0, 0, 0)) #v[i][j] = 0.0
-
-
-	if not mouse_down[0] and not mouse_down[1]:
-		return
-
-	# map mouse pos to grid space
-	var i = int(my);
-	var j = int(mx);
-
-	if i < 1 or i > N or j < 1 or j > N:
-		return
-
-	if mouse_down[0]:
-		# clamp here to stop force going to high on low fps
-		var fx = force * clamp(mx - omx, -1, 1);
-		var fy = force * clamp(my - omy, -1, 1);
-		
-		if (fx != 0 || fy != 0):
-			print("force:" + str(fx) + "," + str(fy));
-		
-		u.set_pixel(i,j,Color(fy, 0, 0)) #u[i][j] = fy
-		v.set_pixel(i,j,Color(fx, 0, 0)) #v[i][j] = fx
-
-	if mouse_down[1]:
-		d.set_pixel(i,j,Color(source, 0, 0)) # d[i][j] = source
-		
-	#omx = mx
-	#omy = my
 
 
 func IX(i,j):
 	return ((i)+(N+2)*(j));
 
-func f2get_from_UI(d: PackedFloat32Array, u: PackedFloat32Array, v: PackedFloat32Array):
+func get_from_UI(d: FloatArray, u: FloatArray, v: FloatArray):
 	"""get_from_UI."""
 
-	var size = (N+2)*(N+2);
+	u_prev.set_all(0.0);
+	v_prev.set_all(0.0);
+	dens_prev.set_all(0.0);
 
-	for i in range(0, size):
-		f2u_prev.set(i, 0.0);
-		f2v_prev.set(i, 0.0);
-		f2dens_prev.set(i, 0.0);
-	
-	f2u_prev.set(IX(1,1), 1.2345); # testing
-	
 	if not mouse_down[0] and not mouse_down[1]:
 		return
 
@@ -284,58 +159,25 @@ func f2get_from_UI(d: PackedFloat32Array, u: PackedFloat32Array, v: PackedFloat3
 		if (fx != 0 || fy != 0):
 			print("force:" + str(fx) + "," + str(fy) + " @ " + str(i) + "," + str(j));
 		
-		f2u_prev.set(IX(i,j), fy)
-		f2v_prev.set(IX(i,j), fx)
+		u_prev.set_value(IX(i,j), fy)
+		v_prev.set_value(IX(i,j), fx)
 		
-		if (fx != 0 || fy != 0):
-			var u_val = Ut.packed_array_get(f2u_prev, IX(i,j))
-			var v_val = Ut.packed_array_get(f2v_prev, IX(i,j))
-			print("force that was set:" + str(u_val) + "," + str(v_val));
-
 	if mouse_down[1]:
-		f2dens_prev.set(IX(i,j), source)
-		
-	#omx = mx
-	#omy = my
+		dens_prev.set_value(IX(i,j), source)
+
 
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	
-	#get_from_UI ( dens_prev, u_prev, v_prev );
-	#vel_step ( N, u, v, u_prev, v_prev, visc, dt );
-	#dens_step ( N, dens, dens_prev, u, v, diff, dt );
-	
 	# Draw into velocity for easy debugging
 	if (drawVel):
-		f2get_from_UI(f2dens_prev, f2u, f2v)
-		fget_from_UI(fdens_prev, fu, fv)
 		get_from_UI(dens_prev, u, v)
 	else:
-		f2get_from_UI(f2dens_prev, f2u_prev, f2v_prev)
-		
-		var r = Ut.packed_array_get(f2u_prev, IX(1,1)); # testing
-		print(str(r));
-	
-		
-		#f2u_prev.set(IX(1,1), 1.2345); # testing
-		f2solver.velocity_step(N, f2u, f2v, f2u_prev, f2v_prev, visc, dt)
-		
-		fget_from_UI(fdens_prev, fu_prev, fv_prev)
-		fsolver.velocity_step(fu, fv, fu_prev, fv_prev, visc, dt)
-		
 		get_from_UI(dens_prev, u_prev, v_prev)
-		solver.vel_step(N, u, v, u_prev, v_prev, visc, dt, mouse_down[0])
-		
-		
-	f2solver.density_step(N, f2dens, f2dens_prev, f2u, f2v, diff, dt);
+		solver.velocity_step(N, u, v, u_prev, v_prev, visc, dt)
 	
-	var r = Ut.packed_array_get(f2dens, IX(1,1)); # testing
-	print("f2dens:" + str(r));
-	
-	fsolver.density_step(fdens, fdens_prev, fu, fv, diff, dt);
-	solver.dens_step(N, dens, dens_prev, u, v, diff, dt)
+	solver.density_step(N, dens, dens_prev, u, v, diff, dt);
 	
 	if dvel:
 		draw_velocity();
@@ -355,14 +197,14 @@ func draw_velocity():
 			var y = (j - 0.5) * h;
 			
 			var cell = cells[i][j];
-			var v_val = Ut.packed_array_get(f2v, IX(i,j)); #fv.get_pixel(i,j).r; # v[i][j]
-			var u_val = -Ut.packed_array_get(f2u, IX(i,j)); #-fu.get_pixel(i,j).r; # u[i][j]
+			var v_val = v.get_value(IX(i,j)); #Ut.packed_array_get(f2v, IX(i,j)); #fv.get_pixel(i,j).r; # v[i][j]
+			var u_val = -u.get_value(IX(i,j)); #-Ut.packed_array_get(f2u, IX(i,j)); #-fu.get_pixel(i,j).r; # u[i][j]
 			
-			if (v_val != 0.0):
-				print("we got v vel:", v_val);
+			#if (v_val != 0.0):
+			#	print("we got v vel:", v_val);
 				
-			if (u_val != 0.0):
-				print("we got u vel:", u_val);
+			#if (u_val != 0.0):
+			#	print("we got u vel:", u_val);
 			
 			cell.set_velocity(Vector3(v_val * velocityScale, 0, -u_val * velocityScale));
 			
@@ -375,7 +217,7 @@ func draw_density():
 	"""draw_density."""
 
 	var h = 1.0 / N
-	var colourScale = 1;
+	var colourScale = 0.001;
 
 	for i in range(1, N + 1):
 		var x = (i - 0.5) * h
@@ -384,13 +226,13 @@ func draw_density():
 			
 			#fdens.set_pixel(i, j, Color(80.0, 0, 0));
 			
-			var d00 = Ut.packed_array_get(f2dens, IX(i,j)) #fdens.get_pixel(i,j).r #dens[i][j]
+			var d00 = dens.get_value(IX(i,j)); #Ut.packed_array_get(f2dens, IX(i,j)) #fdens.get_pixel(i,j).r #dens[i][j]
 			#var d01 = dens[i][j + 1]
 			#var d10 = dens[i + 1][j]
 			#var d11 = dens[i + 1][j + 1]
 
-			if (d00 > 0.0):
-				print("we got density:", d00);
+			#if (d00 > 0.0):
+			#	print("we got density:", d00 * colourScale);
 				
 			var cell = cells[i][j];
 			cell.set_density(d00 * colourScale);
