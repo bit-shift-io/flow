@@ -6,10 +6,10 @@ extends Node
 var drawVel = false; # draw the velocty with out the velocty field disapating
 var uniformForce = Vector2(0.0, 0.0); # initial uniform force
 
-var N = 8
+var N = 15
 var size = N + 2
 
-var dt = 0.1
+var dt = 2 # rate of simulation
 var diff = 0.0
 var visc = 0.0
 var force = 5.0
@@ -166,8 +166,12 @@ func get_from_UI(d: FloatArray, u: FloatArray, v: FloatArray):
 		dens_prev.set_value(IX(i,j), source)
 
 
-
-
+func velocity_step(delta):
+	solver.velocity_step(N, u, v, u_prev, v_prev, visc, delta * dt)
+	
+func density_step(delta):
+	solver.density_step(N, dens, dens_prev, u, v, diff, delta * dt)
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	# Draw into velocity for easy debugging
@@ -175,9 +179,9 @@ func _process(delta):
 		get_from_UI(dens_prev, u, v)
 	else:
 		get_from_UI(dens_prev, u_prev, v_prev)
-		solver.velocity_step(N, u, v, u_prev, v_prev, visc, dt)
+		velocity_step(delta)
 	
-	solver.density_step(N, dens, dens_prev, u, v, diff, dt);
+	density_step(delta)
 	
 	if dvel:
 		draw_velocity();
@@ -206,6 +210,7 @@ func draw_velocity():
 			#if (u_val != 0.0):
 			#	print("we got u vel:", u_val);
 			
+			# this should be Vector3(u_val, 0, v_val)... we have something flipped wrong?!
 			cell.set_velocity(Vector3(v_val * velocityScale, 0, -u_val * velocityScale));
 	
 func draw_density():
