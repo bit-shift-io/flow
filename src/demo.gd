@@ -1,3 +1,12 @@
+#
+# NOTES:
+# the camera looks down with +x being right, and +z being down
+# the fluid sim we have 0, 0 in the bottom left of the screen
+# which is also the way the cells are mapped out
+# 
+# note that i denotes x axis, and j denotes y axis
+#
+
 extends Node
 
 @onready var camera = get_node("Camera");
@@ -130,7 +139,7 @@ func _ready():
 	v.set_all(uniformForce.x);
 
 
-
+# i = x, j = y
 func IX(i,j):
 	return ((i)+(N+2)*(j));
 
@@ -145,8 +154,8 @@ func get_from_UI(d: FloatArray, u: FloatArray, v: FloatArray):
 		return
 
 	# map mouse pos to grid space
-	var i = int(my);
-	var j = int(mx);
+	var i = int(mx);
+	var j = int(my);
 
 	if i < 1 or i > N or j < 1 or j > N:
 		return
@@ -159,8 +168,8 @@ func get_from_UI(d: FloatArray, u: FloatArray, v: FloatArray):
 		if (fx != 0 || fy != 0):
 			print("force:" + str(fx) + "," + str(fy) + " @ " + str(i) + "," + str(j));
 		
-		u_prev.set_value(IX(i,j), fy)
-		v_prev.set_value(IX(i,j), fx)
+		u_prev.set_value(IX(i,j), fx)
+		v_prev.set_value(IX(i,j), fy)
 		
 	if mouse_down[1]:
 		dens_prev.set_value(IX(i,j), source)
@@ -196,11 +205,9 @@ func draw_velocity():
 	var velocityScale = 10.0;
 
 	for i in range(1, N + 1):
-		var x = (i - 0.5) * h
 		for j in range(1, N + 1):
-			var y = (j - 0.5) * h;
 			
-			var cell = cells[i][j];
+			var cell = cells[j][i];
 			var v_val = v.get_value(IX(i,j)); 
 			var u_val = u.get_value(IX(i,j));
 			
@@ -211,12 +218,14 @@ func draw_velocity():
 			#	print("we got u vel:", u_val);
 			
 			# this should be Vector3(u_val, 0, v_val)... we have something flipped wrong?!
-			cell.set_velocity(Vector3(v_val * velocityScale, 0, -u_val * velocityScale));
+			cell.set_velocity(Vector3(u_val * velocityScale, 0, -v_val * velocityScale));
 	
 func draw_density():
 	"""draw_density."""
 
 	var h = 1.0 / N
+	
+	#dens.set_value(IX(1, 5), 10.0); # test
 
 	for i in range(1, N + 1):
 		var x = (i - 0.5) * h
@@ -232,7 +241,7 @@ func draw_density():
 			#if (d00 > 0.0):
 			#	print("we got density:", d00 * colourScale);
 				
-			var cell = cells[i][j];
+			var cell = cells[j][i];
 			cell.set_density(d00);
 			
 			#glColor3f(d00, d00, d00)
