@@ -66,6 +66,7 @@ def main():
     menu['i'] = ['Itch Upload', 'itch_upload']
     menu['a'] = ['All the things - Build data/exes, unit test then upload', 'all_the_things']
     menu['c'] = ['Engine Clean', 'engine_clean']
+    menu['d'] = ['Install dependencies', 'install_dependencies']
 
     print('\n********************************************')
     print(config['args'])
@@ -107,6 +108,13 @@ def process_template(src_file_path, dst_file_path, dictionary):
     return
 
     
+def install_dependencies():
+    log("install_dependencies")
+    if sys.platform.startswith('darwin'):
+        run('brew install scons')
+    else:
+        log("OS not yet supported")
+        
 
 def build_release_exes():
     log("build_release_exes")
@@ -277,16 +285,17 @@ def checkout_or_update_engine():
     run('cp -r {0}/ {1}'.format(bin_dir, godot_bin_dir), { 'show_output': True, 'show_cmd': True, 'cwd': config['paths']['engine'] })
 
     # apply patches
-    log("\nApplying patches")
     patch_dir = '{0}/godot/patches'.format(config['paths']['project'])
-    for filename in os.listdir(patch_dir):
-        if (filename.startswith(".")):
-            continue
+    if os.path.exists(patch_dir):
+        log("\nApplying patches")
+        for filename in os.listdir(patch_dir):
+            if (filename.startswith(".")):
+                continue
 
-        log("\nApplying patch: " + filename)
-        patch_file = os.path.join(patch_dir, filename)
-        run('git apply --ignore-whitespace -v {0}'.format(patch_file), { 'show_output': True, 'show_cmd': True, 'cwd': config['paths']['engine'] })
-    
+            log("\nApplying patch: " + filename)
+            patch_file = os.path.join(patch_dir, filename)
+            run('git apply --ignore-whitespace -v {0}'.format(patch_file), { 'show_output': True, 'show_cmd': True, 'cwd': config['paths']['engine'] })
+        
     # setup project for IDE's
     #run('./qt_create_project.sh', {'cwd': config['paths']['tools']})
     setup_vscode()
