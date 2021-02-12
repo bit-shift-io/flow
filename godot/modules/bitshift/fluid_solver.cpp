@@ -1,4 +1,4 @@
-#include "fluid_solver_2.h"
+#include "fluid_solver.h"
 #include "globals.h"
 
 #define IX(i,j) ((i)+(N+2)*(j))
@@ -117,23 +117,23 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
 }
 
 
-void FluidSolver2::dump_array(int N, Ref<FloatArray> x) {
+void FluidSolver::dump_array(int N, Ref<FloatArray> x) {
 	::dump_array(N, x->ptrw());
 }
 
-void FluidSolver2::density_step(int N, Ref<FloatArray> x, Ref<FloatArray> x0, Ref<FloatArray> u, Ref<FloatArray> v, float diff, float dt) {
+void FluidSolver::density_step(int N, Ref<FloatArray> x, Ref<FloatArray> x0, Ref<FloatArray> u, Ref<FloatArray> v, float diff, float dt) {
 	dens_step(N, x->ptrw(), x0->ptrw(), u->ptrw(), v->ptrw(), diff, dt);
 }
 
-void FluidSolver2::velocity_step(int N, Ref<FloatArray> u, Ref<FloatArray> v, Ref<FloatArray> u0, Ref<FloatArray> v0, float visc, float dt) {
+void FluidSolver::velocity_step(int N, Ref<FloatArray> u, Ref<FloatArray> v, Ref<FloatArray> u0, Ref<FloatArray> v0, float visc, float dt) {
 	vel_step(N, u->ptrw(), v->ptrw(), u0->ptrw(), v0->ptrw(), visc, dt);
 }
 
-void FluidSolver2::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("density_step"), &FluidSolver2::density_step);
-	ClassDB::bind_method(D_METHOD("velocity_step"), &FluidSolver2::velocity_step);
-	ClassDB::bind_method(D_METHOD("dump_array"), &FluidSolver2::dump_array);
+void FluidSolver::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("density_step"), &FluidSolver::density_step);
+	ClassDB::bind_method(D_METHOD("velocity_step"), &FluidSolver::velocity_step);
+	ClassDB::bind_method(D_METHOD("dump_array"), &FluidSolver::dump_array);
 }
 
-FluidSolver2::FluidSolver2() {}
-FluidSolver2::~FluidSolver2() {}
+FluidSolver::FluidSolver() {}
+FluidSolver::~FluidSolver() {}

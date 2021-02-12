@@ -1,12 +1,12 @@
-#ifndef FLUID_SOLVER_2_H
-#define FLUID_SOLVER_2_H
+#ifndef FLUID_SOLVER_H
+#define FLUID_SOLVER_H
 
 #include "core/object/reference.h"
 #include "float_array.h"
 
-class FluidSolver2 : public Reference {
+class FluidSolver : public Reference {
 
-	GDCLASS(FluidSolver2, Reference)
+	GDCLASS(FluidSolver, Reference)
        
 protected:
 
@@ -19,8 +19,8 @@ public:
 	void density_step(int N, Ref<FloatArray> x, Ref<FloatArray> x0, Ref<FloatArray> u, Ref<FloatArray> v, float diff, float dt);
 	void velocity_step(int N, Ref<FloatArray> u, Ref<FloatArray> v, Ref<FloatArray> u0, Ref<FloatArray> v0, float visc, float dt);
 
-	FluidSolver2();
-	~FluidSolver2();            
+	FluidSolver();
+	~FluidSolver();            
 };
 
-#endif // FLUID_SOLVER_2_H
+#endif // FLUID_SOLVER_H

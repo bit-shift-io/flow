@@ -6,7 +6,7 @@ extends Node
 var drawVel = false; # draw the velocty with out the velocty field disapating
 var uniformForce = Vector2(0.0, 0.0); # initial uniform force
 
-var N = 4
+var N = 12
 var size = N + 2
 
 var dt = 0.1
@@ -65,7 +65,7 @@ func create_2d_instance(width, height, scene, parent):
 # interpolate from the grid of previous density values and assign this value to
 # the current grid cell.
 
-var solver = FluidSolver2.new();
+var solver = FluidSolver.new();
 var u = create_arr(size, size);
 var u_prev = create_arr(size, size);
 var v = create_arr(size, size);
@@ -217,7 +217,6 @@ func draw_density():
 	"""draw_density."""
 
 	var h = 1.0 / N
-	var colourScale = 0.001;
 
 	for i in range(1, N + 1):
 		var x = (i - 0.5) * h
@@ -235,7 +234,7 @@ func draw_density():
 			#	print("we got density:", d00 * colourScale);
 				
 			var cell = cells[i][j];
-			cell.set_density(d00 * colourScale);
+			cell.set_density(d00);
 			
 			#glColor3f(d00, d00, d00)
 			#glVertex2f(x, y)

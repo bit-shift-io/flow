@@ -34,9 +34,6 @@ public:
     ~Ut();
 
     static Ut *get_singleton() { return singleton; }
-
-    // temporary work around for this issue: https://github.com/godotengine/godot/issues/44812#issuecomment-770315447
-    float packed_array_get(const PackedFloat32Array& u, float index);
 };
 
 

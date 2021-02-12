@@ -11,9 +11,5 @@ Ut::~Ut() {
 }
 
 void Ut::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("packed_array_get"), &Ut::packed_array_get);    
-}
-
-float Ut::packed_array_get(const PackedFloat32Array& arr, float index) {
-    return arr[index];
+    
 }
