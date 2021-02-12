@@ -6,7 +6,7 @@ extends Node
 var drawVel = false; # draw the velocty with out the velocty field disapating
 var uniformForce = Vector2(0.0, 0.0); # initial uniform force
 
-var N = 12
+var N = 8
 var size = N + 2
 
 var dt = 0.1
@@ -197,8 +197,8 @@ func draw_velocity():
 			var y = (j - 0.5) * h;
 			
 			var cell = cells[i][j];
-			var v_val = v.get_value(IX(i,j)); #Ut.packed_array_get(f2v, IX(i,j)); #fv.get_pixel(i,j).r; # v[i][j]
-			var u_val = -u.get_value(IX(i,j)); #-Ut.packed_array_get(f2u, IX(i,j)); #-fu.get_pixel(i,j).r; # u[i][j]
+			var v_val = v.get_value(IX(i,j)); 
+			var u_val = u.get_value(IX(i,j));
 			
 			#if (v_val != 0.0):
 			#	print("we got v vel:", v_val);
@@ -207,11 +207,6 @@ func draw_velocity():
 			#	print("we got u vel:", u_val);
 			
 			cell.set_velocity(Vector3(v_val * velocityScale, 0, -u_val * velocityScale));
-			
-			#glColor3f(1, 0, 0)
-			#glVertex2f(x, y)
-			#glVertex2f(x + u[i, j], y + v[i, j])
-
 	
 func draw_density():
 	"""draw_density."""
@@ -223,9 +218,8 @@ func draw_density():
 		for j in range(1, N + 1):
 			var y = (j - 0.5) * h
 			
-			#fdens.set_pixel(i, j, Color(80.0, 0, 0));
 			
-			var d00 = dens.get_value(IX(i,j)); #Ut.packed_array_get(f2dens, IX(i,j)) #fdens.get_pixel(i,j).r #dens[i][j]
+			var d00 = dens.get_value(IX(i,j));
 			#var d01 = dens[i][j + 1]
 			#var d10 = dens[i + 1][j]
 			#var d11 = dens[i + 1][j + 1]

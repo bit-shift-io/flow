@@ -2,6 +2,7 @@ extends Node3D
 
 @onready var box: CSGBox3D = get_node("CSGBox");
 @onready var geom = get_node("ImmediateGeometry");
+@onready var arrow: CSGBox3D = get_node("Arrow");
 
 var pressureAsHeight = true; # show pressure as height
 var velocity = Vector3(0, 0, 0);
@@ -10,12 +11,14 @@ func set_velocity(v):
 	if (v == velocity):
 		return;
 		
+	arrow.set_velocity(velocity);
+		
 	velocity = v;
-	geom.clear();
-	geom.begin(Mesh.PRIMITIVE_LINES, null);
-	geom.add_vertex(Vector3(0,0,0));
-	geom.add_vertex(velocity);
-	geom.end();
+	#geom.clear();
+	#geom.begin(Mesh.PRIMITIVE_LINES, null);
+	#geom.add_vertex(Vector3(0,0,0));
+	#geom.add_vertex(velocity);
+	#geom.end();
 	
 func set_density(d):
 	var new_d = d; #max(d, 0.2);
