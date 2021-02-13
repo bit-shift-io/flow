@@ -78,6 +78,15 @@ func _process(delta):
 	draw_density();
 	
 	
+func world_to_grid_space(pos: Vector3):
+	# convert world space to grid space
+	var size = Store.fluid_sim.size
+	var hs = size / 2
+	var mx = (pos.x + hs)
+	var my = (-pos.z + hs)
+	return Vector2(mx, my)
+	
+		
 func draw_velocity():
 	var N = Store.fluid_sim.N
 	var h = 1.0 / N

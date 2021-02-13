@@ -34,9 +34,21 @@ func clear_prev_velocity():
 	u_prev.set_all(0.0);
 	v_prev.set_all(0.0);
 	
-func set_prev_velocity(x: int, y: int, v: Vector2):
-	u_prev.set_value(IX(x,y), v.x)
-	v_prev.set_value(IX(x,y), v.y)
+func set_velocity(xy: Vector2, vel: Vector2):
+	var x = int(xy.x)
+	var y = int(xy.y)
+	u.set_value(IX(x,y), vel.x)
+	v.set_value(IX(x,y), vel.y)
+	
+func set_prev_velocity(xy: Vector2, vel: Vector2):
+	var x = int(xy.x)
+	var y = int(xy.y)
+	u_prev.set_value(IX(x,y), vel.x)
+	v_prev.set_value(IX(x,y), vel.y)
+	
+#func set_prev_velocity(x: int, y: int, v: Vector2):
+#	u_prev.set_value(IX(x,y), v.x)
+#	v_prev.set_value(IX(x,y), v.y)
 	
 func set_prev_density(x: int, y: int, v: float):
 	dens_prev.set_value(IX(x,y), v)

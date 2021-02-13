@@ -1,16 +1,21 @@
-extends Node
+extends Node3D
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+var force = 1
+
+@onready var box: CSGBox3D = $CSGBox3D2;
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	set_process(false)
 
+func spawn(xform):
+	global_transform = xform
+	set_process(true)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	var gs = Store.map_node.world_to_grid_space(global_transform.origin)
+	var vel = global_transform.basis.z
+	# TODO: needs work!
+	Store.fluid_sim.set_velocity(gs, Vector2(vel.x, vel.z) * force)
+	pass

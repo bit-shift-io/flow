@@ -15,6 +15,7 @@ var source = 100.0
 var dvel = true
 
 var building
+var rotating_building = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -41,17 +42,22 @@ func _input(event):
 		omx = mx
 		omy = my
 		
-		# convert world space to grid space
-		var size = Store.fluid_sim.size
-		var hs = size / 2;
-		mx = (cursor.transform.origin.x + hs);
-		my = (-cursor.transform.origin.z + hs); 
-		#print("Mouse at: ", str(mx), ",", str(my))
+		var gs = Store.map_node.world_to_grid_space(cursor.transform.origin)
+		mx = gs.x
+		my = gs.y
+		
+		if (building && rotating_building):
+			#var dir = cursor.transform.origin - building.transform.origin
+			building.transform = building.transform.looking_at(cursor.transform.origin, Vector3(0, 1, 0))
 	
 	mouse_down[0] = false;
 	if Input.is_action_pressed("left_click"):
+		if (building && rotating_building):
+			confirm_building_rotation()
+			return
+			
 		if (building):
-			place_building()
+			confirm_building_position()
 			return
 			
 		mouse_down[0] = true;
@@ -90,7 +96,7 @@ func get_from_UI():
 		if (fx != 0 || fy != 0):
 			print("force:" + str(fx) + "," + str(fy) + " @ " + str(i) + "," + str(j));
 		
-		Store.fluid_sim.set_prev_velocity(i, j, Vector2(fx, fy))
+		Store.fluid_sim.set_prev_velocity(Vector2(i, j), Vector2(fx, fy))
 		
 	if mouse_down[1]:
 		Store.fluid_sim.set_prev_density(i, j, source)
@@ -99,11 +105,17 @@ func on_fan_pressed():
 	building = fan_building_template.instance()
 	cursor.add_child(building)
 	
-func place_building():
+func confirm_building_position():
+	var xform = building.global_transform
+	rotating_building = true
+	cursor.remove_child(building)
+	Store.map_node.add_child(building)
+	building.transform = xform
+	
+func confirm_building_rotation():
 	hud.fan_button.pressed = false
 	var xform = building.global_transform
-	cursor.remove_child(building)
 	Store.buildings.append(building)
-	Store.map_node.add_child(building)
-	building.global_transform = xform
+	building.spawn(xform)
 	building = null
+	rotating_building = false
