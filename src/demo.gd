@@ -211,13 +211,6 @@ func draw_velocity():
 			var v_val = v.get_value(IX(i,j)); 
 			var u_val = u.get_value(IX(i,j));
 			
-			#if (v_val != 0.0):
-			#	print("we got v vel:", v_val);
-				
-			#if (u_val != 0.0):
-			#	print("we got u vel:", u_val);
-			
-			# this should be Vector3(u_val, 0, v_val)... we have something flipped wrong?!
 			cell.set_velocity(Vector3(u_val * velocityScale, 0, -v_val * velocityScale));
 	
 func draw_density():
@@ -228,19 +221,12 @@ func draw_density():
 	#dens.set_value(IX(1, 5), 10.0); # test
 
 	for i in range(1, N + 1):
-		var x = (i - 0.5) * h
 		for j in range(1, N + 1):
-			var y = (j - 0.5) * h
-			
-			
 			var d00 = dens.get_value(IX(i,j));
 			#var d01 = dens[i][j + 1]
 			#var d10 = dens[i + 1][j]
 			#var d11 = dens[i + 1][j + 1]
 
-			#if (d00 > 0.0):
-			#	print("we got density:", d00 * colourScale);
-				
 			var cell = cells[j][i];
 			cell.set_density(d00);
 			
