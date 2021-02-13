@@ -12,6 +12,9 @@ extends Node
 @onready var camera = get_node("Camera");
 @onready var cursor = get_node("Cursor");
 
+
+var fluid_sim = preload("res://fluid_sim.gd").new();
+
 var drawVel = false; # draw the velocty with out the velocty field disapating
 var uniformForce = Vector2(0.0, 0.0); # initial uniform force
 
@@ -38,13 +41,6 @@ var cell_scene = load("res://cell.tscn")
 var cells;
 
 @onready var base: CSGBox3D = $"Base" #get_node("Base");
-
-func create_arr(width, height):
-	var sz = width * height;
-	var p : FloatArray = FloatArray.new();
-	p.resize(sz);
-	p.set_all(0.0);
-	return p;
 	
 func create_2d_instance(width, height, scene, parent):
 	var a = []
@@ -67,32 +63,6 @@ func create_2d_instance(width, height, scene, parent):
 
 	return a;
 			
-# Start with two grids.
-# One that contains the density values from the previous time step and one that
-# will contain the new values. For each grid cell of the latter we trace the
-# cell's center position backwards through the velocity field. We then linearly
-# interpolate from the grid of previous density values and assign this value to
-# the current grid cell.
-
-var solver = FluidSolver.new();
-var u = create_arr(size, size);
-var u_prev = create_arr(size, size);
-var v = create_arr(size, size);
-var v_prev = create_arr(size, size);
-var dens = create_arr(size, size);
-var dens_prev = create_arr(size, size);
-	
-func clear_data():
-	"""clear_data."""
-	
-	u.set_all(0.0);
-	u_prev.set_all(0.0);
-	v.set_all(0.0);
-	v_prev.set_all(0.0);
-	dens.set_all(0.0);
-	dens_prev.set_all(0.0);
-
-			
 func _input(event):
 	if event is InputEventMouseMotion:
 		var position2D = get_viewport().get_mouse_position()
@@ -111,7 +81,6 @@ func _input(event):
 		my = (-cursor.transform.origin.z + hs); 
 		#print("Mouse at: ", str(mx), ",", str(my))
 	
-	
 	mouse_down[0] = false;
 	if Input.is_action_pressed("left_click"):
 		mouse_down[0] = true;
@@ -121,11 +90,10 @@ func _input(event):
 		mouse_down[1] = true;
 		
 	if Input.is_action_just_pressed("clear"):
-		clear_data();
+		fluid_sim.clear_data();
 		
 	if Input.is_action_just_pressed("velocity"):
 		dvel = !dvel;
-		
 		
 	
 func _ready():
@@ -134,21 +102,16 @@ func _ready():
 	base.size.z = float(size) + 1.0;
 	cells = create_2d_instance(size, size, cell_scene, cell_parent);
 	
+	fluid_sim.init(N, N)
+	
 	# uniform force field for testing
-	u.set_all(uniformForce.y);
-	v.set_all(uniformForce.x);
+	#u.set_all(uniformForce.y);
+	#v.set_all(uniformForce.x);
 
 
-# i = x, j = y
-func IX(i,j):
-	return ((i)+(N+2)*(j));
-
-func get_from_UI(d: FloatArray, u: FloatArray, v: FloatArray):
-	"""get_from_UI."""
-
-	u_prev.set_all(0.0);
-	v_prev.set_all(0.0);
-	dens_prev.set_all(0.0);
+func get_from_UI():
+	fluid_sim.clear_prev_velocity()
+	fluid_sim.clear_prev_density()
 
 	if not mouse_down[0] and not mouse_down[1]:
 		return
@@ -168,30 +131,25 @@ func get_from_UI(d: FloatArray, u: FloatArray, v: FloatArray):
 		if (fx != 0 || fy != 0):
 			print("force:" + str(fx) + "," + str(fy) + " @ " + str(i) + "," + str(j));
 		
-		u_prev.set_value(IX(i,j), fx)
-		v_prev.set_value(IX(i,j), fy)
+		fluid_sim.set_prev_velocity(i, j, Vector2(fx, fy))
 		
 	if mouse_down[1]:
-		dens_prev.set_value(IX(i,j), source)
+		fluid_sim.set_prev_density(i, j, source)
 
 
-func velocity_step(delta):
-	solver.velocity_step(N, u, v, u_prev, v_prev, visc, delta * dt)
-	
-func density_step(delta):
-	solver.density_step(N, dens, dens_prev, u, v, diff, delta * dt)
-	
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	# Draw into velocity for easy debugging
 	if (drawVel):
-		get_from_UI(dens_prev, u, v)
+		get_from_UI()
 	else:
-		get_from_UI(dens_prev, u_prev, v_prev)
-		velocity_step(delta)
+		get_from_UI()
+		fluid_sim.velocity_step(delta)
 	
-	density_step(delta)
+	fluid_sim.density_step(delta)
 	
+	# TODO: move drawing code to a Fluid_sim_renderer ?
 	if dvel:
 		draw_velocity();
 
@@ -199,30 +157,23 @@ func _process(delta):
 	
 	
 func draw_velocity():
-	"""draw_velocity."""
-
 	var h = 1.0 / N
 	var velocityScale = 10.0;
 
 	for i in range(1, N + 1):
-		for j in range(1, N + 1):
-			
+		for j in range(1, N + 1):			
 			var cell = cells[j][i];
-			var v_val = v.get_value(IX(i,j)); 
-			var u_val = u.get_value(IX(i,j));
+			var vel = fluid_sim.get_velocity(i, j)
+			var u_val = vel.x
+			var v_val = vel.y
 			
 			cell.set_velocity(Vector3(u_val * velocityScale, 0, -v_val * velocityScale));
 	
 func draw_density():
-	"""draw_density."""
-
 	var h = 1.0 / N
-	
-	#dens.set_value(IX(1, 5), 10.0); # test
-
 	for i in range(1, N + 1):
 		for j in range(1, N + 1):
-			var d00 = dens.get_value(IX(i,j));
+			var d00 = fluid_sim.get_density(i, j);
 			#var d01 = dens[i][j + 1]
 			#var d10 = dens[i + 1][j]
 			#var d11 = dens[i + 1][j + 1]

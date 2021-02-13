@@ -14,6 +14,10 @@ config/name="flow"
 run/main_scene="res://map.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Game="*res://game.gd"
+
 [input]
 
 left_click={
