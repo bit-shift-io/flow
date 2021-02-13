@@ -4,7 +4,9 @@
 
 extends Node
 
-var fluid_sim;
+var players = []
+var fluid_sim
+var buildings = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

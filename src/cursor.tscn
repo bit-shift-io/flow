@@ -1,6 +1,8 @@
 [gd_scene format=2]
 
-[node name="Cursor" type="Spatial"]
+[node name="Cursor" type="Node3D"]
+script = null
 
-[node name="CSGSphere" type="CSGSphere" parent="."]
+[node name="CSGSphere" type="CSGSphere3D" parent="."]
 radius = 0.5
+script = null
