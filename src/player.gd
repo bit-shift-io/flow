@@ -1,7 +1,9 @@
 extends Node
 
-@onready var cursor = get_node("Cursor");
+var fan_building_template = load("res://building.tscn")
 
+@onready var cursor = $Cursor
+@onready var hud = $HUD
 
 var omx = 0.0
 var omy = 0.0
@@ -12,9 +14,13 @@ var force = 5.0
 var source = 100.0
 var dvel = true
 
+var building
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	set_process_input(true);
+	
+	hud.fan_button.connect("pressed", Callable(self, "on_fan_pressed"))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -44,6 +50,10 @@ func _input(event):
 	
 	mouse_down[0] = false;
 	if Input.is_action_pressed("left_click"):
+		if (building):
+			place_building()
+			return
+			
 		mouse_down[0] = true;
 		
 	mouse_down[1] = false;
@@ -85,3 +95,15 @@ func get_from_UI():
 	if mouse_down[1]:
 		Store.fluid_sim.set_prev_density(i, j, source)
 	
+func on_fan_pressed():
+	building = fan_building_template.instance()
+	cursor.add_child(building)
+	
+func place_building():
+	hud.fan_button.pressed = false
+	var xform = building.global_transform
+	cursor.remove_child(building)
+	Store.buildings.append(building)
+	Store.map_node.add_child(building)
+	building.global_transform = xform
+	building = null

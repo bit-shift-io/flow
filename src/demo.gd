@@ -38,6 +38,8 @@ func create_2d_instance(width, height, scene, parent):
 	return a;
 			
 func _ready():
+	Store.map_node = self
+	
 	var N = 15
 	var size = N + 2
 	base.size.x = float(size) + 1.0;
