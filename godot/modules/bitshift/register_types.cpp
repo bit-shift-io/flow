@@ -29,8 +29,9 @@ void free_singletons() {
 void register_bitshift_types() {
     ClassDB::register_class<FluidSolver>();
     ClassDB::register_class<FloatArray>();
+    ClassDB::register_class<BUt>();
     
-    instance_singleton<Ut>("Ut");
+    //instance_singleton<Ut>("Ut");
 }
 
 void unregister_bitshift_types() {

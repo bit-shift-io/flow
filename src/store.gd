@@ -6,8 +6,10 @@ extends Node
 
 var players = []
 var fluid_sim
+var fluid_sim_renderer
 var buildings = []
-var map_node
+var game
+var map # map root node
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

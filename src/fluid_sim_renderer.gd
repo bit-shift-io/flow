@@ -9,13 +9,8 @@
 
 extends Node
 
-var drawVel = false; # draw the velocty with out the velocty field disapating
-var uniformForce = Vector2(0.0, 0.0); # initial uniform force
-var cell_scene = load("res://cell.tscn")
-@onready var cell_parent = $"." #get_node(".")
 var cells;
-@onready var base: CSGBox3D = $"Base" #get_node("Base");
-	
+
 func create_2d_instance(width, height, scene, parent):
 	var a = []
 	var hw = width / 2;
@@ -37,46 +32,10 @@ func create_2d_instance(width, height, scene, parent):
 
 	return a;
 			
-func _ready():
-	Store.map_node = self
-	
-	var N = 15
+func init(cell_scene, cell_parent):
+	var N = Store.fluid_sim.N
 	var size = N + 2
-	base.size.x = float(size) + 1.0;
-	base.size.z = float(size) + 1.0;
 	cells = create_2d_instance(size, size, cell_scene, cell_parent);
-	
-	Store.fluid_sim = load("res://fluid_sim.gd").new();
-	Store.fluid_sim.init(N, N)
-	
-	var player = load("res://player.tscn").instance();
-	Store.players.append(player)
-	add_child(player)
-	
-	# uniform force field for testing
-	#u.set_all(uniformForce.y);
-	#v.set_all(uniformForce.x);
-
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	# Draw into velocity for easy debugging
-	if (drawVel):
-		Store.players[0].get_from_UI()
-	else:
-		Store.players[0].get_from_UI()
-		Store.fluid_sim.velocity_step(delta)
-	
-	Store.fluid_sim.density_step(delta)
-	
-	# TODO: move drawing code to a Fluid_sim_renderer ?
-	var dvel = Store.players[0].dvel
-	if dvel:
-		draw_velocity();
-
-	draw_density();
-	
 	
 func world_to_grid_space(pos: Vector3):
 	# convert world space to grid space

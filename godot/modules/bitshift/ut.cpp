@@ -1,15 +1,15 @@
 #include "ut.h"
 
-Ut *Ut::singleton=NULL;
+//Ut *Ut::singleton=NULL;
 
-Ut::Ut() {
-    singleton = this;
+BUt::BUt() {
+    //singleton = this;
 }
 
-Ut::~Ut() {
-    singleton = NULL;
+BUt::~BUt() {
+    //singleton = NULL;
 }
 
-void Ut::_bind_methods() {
+void BUt::_bind_methods() {
     
 }

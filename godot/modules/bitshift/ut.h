@@ -19,10 +19,10 @@ class Camera3D;
 class MeshInstance3D;
 
 
-class Ut : public Reference {
-	GDCLASS(Ut,Reference)
+class BUt : public Reference {
+	GDCLASS(BUt, Reference)
 
-	static Ut *singleton;
+	//static Ut *singleton;
 
 protected:
 
@@ -30,10 +30,10 @@ protected:
            
 public:
 
-    Ut();
-    ~Ut();
+    BUt();
+    ~BUt();
 
-    static Ut *get_singleton() { return singleton; }
+    //static Ut *get_singleton() { return singleton; }
 };
 
 

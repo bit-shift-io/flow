@@ -17,6 +17,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Store="*res://store.gd"
+Ut="*res://ut.gd"
 
 [input]
 

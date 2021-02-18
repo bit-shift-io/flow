@@ -14,8 +14,12 @@ var force = 5.0
 var source = 100.0
 var dvel = true
 
-var building
-var rotating_building = false
+var states = [
+	load("res://player_default_state.gd").new(),
+	load("res://player_build_state.gd").new()
+]
+var current_state
+var prev_state
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,99 +27,41 @@ func _ready():
 	
 	hud.fan_button.connect("pressed", Callable(self, "on_fan_pressed"))
 
+	for s in states:
+		s.player = self
+		
+	set_state(states[0])
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
+func set_state(s):
+	prev_state = current_state
+	current_state = s
+	if (prev_state):
+		prev_state.exit()
+		
+	current_state.enter()
 	
+func find_state(n):
+	for s in states:
+		if (s.name == n):
+			return s
+
+func process(delta):
+	current_state.process(delta)
+	
+func update_cursor_transform():
+	var camera = get_viewport().get_camera()
+	var position2D = get_viewport().get_mouse_position()
+	var dropPlane  = Plane(Vector3(0, 1, 0), 0);
+	var position3D = dropPlane.intersects_ray(camera.project_ray_origin(position2D),camera.project_ray_normal(position2D))
+	if (position3D):
+		cursor.transform.origin = position3D;
+		
+			
 func _input(event):
-	if event is InputEventMouseMotion:
-		var camera = get_viewport().get_camera()
-		var position2D = get_viewport().get_mouse_position()
-		var dropPlane  = Plane(Vector3(0, 1, 0), 0);
-		var position3D = dropPlane.intersects_ray(camera.project_ray_origin(position2D),camera.project_ray_normal(position2D))
-		#print(position3D)
-		if (position3D):
-			cursor.transform.origin = position3D;
-			
-		omx = mx
-		omy = my
-		
-		var gs = Store.map_node.world_to_grid_space(cursor.transform.origin)
-		mx = gs.x
-		my = gs.y
-		
-		if (building && rotating_building):
-			#var dir = cursor.transform.origin - building.transform.origin
-			building.transform = building.transform.looking_at(cursor.transform.origin, Vector3(0, 1, 0))
+	current_state.input(event)
 	
-	mouse_down[0] = false;
-	if Input.is_action_pressed("left_click"):
-		if (building && rotating_building):
-			confirm_building_rotation()
-			return
-			
-		if (building):
-			confirm_building_position()
-			return
-			
-		mouse_down[0] = true;
-		
-	mouse_down[1] = false;
-	if Input.is_action_pressed("right_click"):
-		mouse_down[1] = true;
-		
-	if Input.is_action_just_pressed("clear"):
-		Store.fluid_sim.clear_data();
-		
-	if Input.is_action_just_pressed("velocity"):
-		dvel = !dvel;
-		
 
-func get_from_UI():
-	Store.fluid_sim.clear_prev_velocity()
-	Store.fluid_sim.clear_prev_density()
-
-	if not mouse_down[0] and not mouse_down[1]:
-		return
-
-	# map mouse pos to grid space
-	var i = int(mx);
-	var j = int(my);
-
-	var N = Store.fluid_sim.N
-	if i < 1 or i > N or j < 1 or j > N:
-		return
-
-	if mouse_down[0]:
-		# clamp here to stop force going to high on low fps
-		var fx = force * clamp(mx - omx, -1, 1);
-		var fy = force * clamp(my - omy, -1, 1);
-		
-		if (fx != 0 || fy != 0):
-			print("force:" + str(fx) + "," + str(fy) + " @ " + str(i) + "," + str(j));
-		
-		Store.fluid_sim.set_prev_velocity(Vector2(i, j), Vector2(fx, fy))
-		
-	if mouse_down[1]:
-		Store.fluid_sim.set_prev_density(i, j, source)
-	
 func on_fan_pressed():
-	building = fan_building_template.instance()
-	cursor.add_child(building)
+	set_state(find_state("player_build_state"))
 	
-func confirm_building_position():
-	var xform = building.global_transform
-	rotating_building = true
-	cursor.remove_child(building)
-	Store.map_node.add_child(building)
-	building.transform = xform
 	
-func confirm_building_rotation():
-	hud.fan_button.pressed = false
-	var xform = building.global_transform
-	Store.buildings.append(building)
-	building.spawn(xform)
-	building = null
-	rotating_building = false
