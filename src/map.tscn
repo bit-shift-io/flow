@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://game.gd" type="Script" id=1]
 [ext_resource path="res://cell.tscn" type="PackedScene" id=2]
+[ext_resource path="res://density_spawn.tscn" type="PackedScene" id=3]
 
 [sub_resource type="StandardMaterial3D" id=1]
 shading_mode = 0
@@ -45,3 +46,9 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.98426 )
 size = Vector3( 1, 1, 10 )
 material = SubResource( 3 )
 script = null
+
+[node name="DensitySpawn0" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0 )
+
+[node name="DensitySpawn1" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0 )

@@ -45,12 +45,22 @@ func _process(delta):
 		p.process(delta)
 		
 	Store.fluid_sim.velocity_step(delta)
+	
+	# move each team density through the velocity field
 	Store.fluid_sim.density_step(delta)
 	Store.fluid_sim.density_step_2(delta)
 	
+	# TODO: resolve collision of colours
+	
+	# draw density
 	var dvel = Store.players[0].dvel
 	if dvel:
 		Store.fluid_sim_renderer.draw_velocity();
 
 	Store.fluid_sim_renderer.draw_density();
+	
+	# clear density and velocity ready for next frame
+	Store.fluid_sim.clear_prev_velocity()
+	Store.fluid_sim.clear_prev_density()
+	Store.fluid_sim.clear_prev_density_2()
 	

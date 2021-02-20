@@ -12,7 +12,6 @@ detail_uv_layer = 0
 [sub_resource type="StandardMaterial3D" id=2]
 shading_mode = 0
 albedo_color = Color( 0, 0.952941, 1, 1 )
-refraction_enabled = false
 
 [node name="Building" type="Node3D"]
 script = ExtResource( 1 )

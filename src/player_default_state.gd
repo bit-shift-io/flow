@@ -52,9 +52,9 @@ func input(event):
 		
 
 func process(delta):
-	Store.fluid_sim.clear_prev_velocity()
-	Store.fluid_sim.clear_prev_density()
-	Store.fluid_sim.clear_prev_density_2()
+	#Store.fluid_sim.clear_prev_velocity()
+	#Store.fluid_sim.clear_prev_density()
+	#Store.fluid_sim.clear_prev_density_2()
 
 	if not mouse_down[0] and not mouse_down[1]:
 		return
