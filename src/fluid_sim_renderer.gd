@@ -65,13 +65,20 @@ func draw_density():
 	var h = 1.0 / N
 	for i in range(1, N + 1):
 		for j in range(1, N + 1):
+			# density for fluid 1
 			var d00 = Store.fluid_sim.get_density(i, j);
 			#var d01 = dens[i][j + 1]
 			#var d10 = dens[i + 1][j]
 			#var d11 = dens[i + 1][j + 1]
+			
+			# density for fluid 2
+			var d200 = Store.fluid_sim.get_density_2(i, j);
 
 			var cell = cells[j][i];
-			cell.set_density(d00);
+			cell.set_density(d00 + d200);
+			
+			var colourScale = 0.1;
+			cell.set_color(Color(0, d00 * colourScale, 0) + Color(0, 0, d200 * colourScale));
 			
 			#glColor3f(d00, d00, d00)
 			#glVertex2f(x, y)

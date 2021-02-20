@@ -30,8 +30,7 @@ func set_density(d):
 	#	return;
 
 	box.visible = true;
-	var colourScale = 0.1;
-	set_color(Color(0, d * colourScale, 0));
+	
 	if (pressureAsHeight):
 		box.size.y = new_d * 0.5;
 		box.transform.origin = Vector3(0.0, new_d * 0.25, 0.0); # raise so bottom of box is at zero

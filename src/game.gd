@@ -46,6 +46,7 @@ func _process(delta):
 		
 	Store.fluid_sim.velocity_step(delta)
 	Store.fluid_sim.density_step(delta)
+	Store.fluid_sim.density_step_2(delta)
 	
 	var dvel = Store.players[0].dvel
 	if dvel:

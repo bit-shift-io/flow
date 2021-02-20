@@ -5,9 +5,13 @@ var u: FloatArray
 var u_prev: FloatArray
 var v: FloatArray
 var v_prev: FloatArray
+
+
 var dens: FloatArray
 var dens_prev: FloatArray
 
+var dens_2: FloatArray
+var dens_prev_2: FloatArray
 
 var N = 15
 var size = N + 2
@@ -29,6 +33,8 @@ func clear_data():
 	v_prev.set_all(0.0);
 	dens.set_all(0.0);
 	dens_prev.set_all(0.0);
+	dens_2.set_all(0.0);
+	dens_prev_2.set_all(0.0);
 	
 func clear_prev_velocity():
 	u_prev.set_all(0.0);
@@ -53,6 +59,9 @@ func set_prev_velocity(xy: Vector2, vel: Vector2):
 func set_prev_density(x: int, y: int, v: float):
 	dens_prev.set_value(IX(x,y), v)
 	
+func set_prev_density_2(x: int, y: int, v: float):
+	dens_prev_2.set_value(IX(x,y), v)
+	
 func get_velocity(x: int, y: int):
 	var v_val = v.get_value(IX(x,y)) 
 	var u_val = u.get_value(IX(x,y))
@@ -61,8 +70,14 @@ func get_velocity(x: int, y: int):
 func get_density(x: int, y: int):
 	return dens.get_value(IX(x,y));
 	
+func get_density_2(x: int, y: int):
+	return dens_2.get_value(IX(x,y));
+	
 func clear_prev_density():
 	dens_prev.set_all(0.0);
+	
+func clear_prev_density_2():
+	dens_prev_2.set_all(0.0);
 
 func create_arr(width, height):
 	var sz = width * height;
@@ -77,6 +92,9 @@ func velocity_step(delta):
 func density_step(delta):
 	solver.density_step(N, dens, dens_prev, u, v, diff, delta * dt)
 	
+func density_step_2(delta):
+	solver.density_step(N, dens_2, dens_prev_2, u, v, diff, delta * dt)
+	
 func init(width, height):
 	# only support square for now
 	height = width
@@ -89,6 +107,8 @@ func init(width, height):
 	v_prev = create_arr(size, size);
 	dens = create_arr(size, size);
 	dens_prev = create_arr(size, size);
+	dens_2 = create_arr(size, size);
+	dens_prev_2 = create_arr(size, size);
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

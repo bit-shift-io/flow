@@ -14,8 +14,6 @@ albedo_color = Color( 0.976471, 0.00392157, 0.00392157, 1 )
 [sub_resource type="StandardMaterial3D" id=3]
 shading_mode = 0
 albedo_color = Color( 0, 0, 1, 1 )
-refraction_enabled = false
-detail_enabled = false
 
 [node name="Map" type="Node3D"]
 script = ExtResource( 1 )
