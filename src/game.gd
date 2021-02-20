@@ -50,7 +50,8 @@ func _process(delta):
 	Store.fluid_sim.density_step(delta)
 	Store.fluid_sim.density_step_2(delta)
 	
-	# TODO: resolve collision of colours
+	# resolve collision of colours
+	resolve_collisions()
 	
 	# draw density
 	var dvel = Store.players[0].dvel
@@ -64,3 +65,26 @@ func _process(delta):
 	Store.fluid_sim.clear_prev_density()
 	Store.fluid_sim.clear_prev_density_2()
 	
+# TODO: move to C++?
+func resolve_collisions():
+	var N = Store.fluid_sim.N
+	for x in range(1, N + 1):
+		for y in range(1, N + 1):
+			var d1 = Store.fluid_sim.get_density(x, y);
+			var d2 = Store.fluid_sim.get_density_2(x, y);
+			
+			# no collision occured
+			if (d1 <= 0 || d2 <= 0):
+				continue
+				
+			# what equation are we going to use?
+			# greater wins
+			if (d1 > d2):
+				Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), d1 + d2)
+				Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), 0)
+			
+			if (d2 > d1):
+				Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), 0)
+				Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), d1 + d2)
+			
+				
