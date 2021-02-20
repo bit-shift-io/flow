@@ -104,12 +104,12 @@ func erode(x, y, d1, d2, delta):
 	var diff = d2 - d1
 	diff = diff * delta * collision_rate
 	
-	if (diff > 0): # d2 > d1
+	if (d2 > d1): # d2 > d1
 		Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), d1 - diff)
 		Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), d2 + diff)
 	
-	if (diff < 0): # d1 > d2
-		Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), d1 + diff)
-		Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), d2 - diff)
+	if (d1 > d2): # d1 > d2
+		Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), d1 - diff)
+		Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), d2 + diff)
 			
 				
