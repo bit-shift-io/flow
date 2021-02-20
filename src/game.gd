@@ -14,6 +14,8 @@ var uniformForce = Vector2(0.0, 0.0); # initial uniform force
 var cell_scene = load("res://cell.tscn")
 @onready var base: CSGBox3D = $"Base" #get_node("Base");
 			
+var collision_rate = 10
+
 func _ready():
 	Store.game = self
 	Store.map = self
@@ -51,7 +53,7 @@ func _process(delta):
 	Store.fluid_sim.density_step_2(delta)
 	
 	# resolve collision of colours
-	resolve_collisions()
+	resolve_collisions(delta)
 	
 	# draw density
 	var dvel = Store.players[0].dvel
@@ -66,7 +68,7 @@ func _process(delta):
 	Store.fluid_sim.clear_prev_density_2()
 	
 # TODO: move to C++?
-func resolve_collisions():
+func resolve_collisions(delta):
 	var N = Store.fluid_sim.N
 	for x in range(1, N + 1):
 		for y in range(1, N + 1):
@@ -78,13 +80,36 @@ func resolve_collisions():
 				continue
 				
 			# what equation are we going to use?
-			# greater wins
-			if (d1 > d2):
-				Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), d1 + d2)
-				Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), 0)
+			#greater_then(x, y, d1, d2, delta)
+			erode(x, y, d1, d2, delta)
 			
-			if (d2 > d1):
-				Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), 0)
-				Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), d1 + d2)
+# greater wins
+# notes: might need a rate of conversion to allow
+# players to try to push density and colour into each other
+func greater_then(x, y, d1, d2, delta):
+	#var diff = d2 - d1
+	#diff = diff * delta * collision_rate
+	
+	if (d1 > d2): # diff > 0
+		Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), d1 + d2)
+		Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), 0)
+	
+	if (d2 > d1): # diff < 0
+		Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), 0)
+		Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), d1 + d2)
+		
+# erode/disolve each other equally
+# notes: should this happen over time?
+func erode(x, y, d1, d2, delta):
+	var diff = d2 - d1
+	diff = diff * delta * collision_rate
+	
+	if (diff > 0): # d2 > d1
+		Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), d1 - diff)
+		Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), d2 + diff)
+	
+	if (diff < 0): # d1 > d2
+		Store.fluid_sim.dens.set_value(Store.fluid_sim.IX(x,y), d1 + diff)
+		Store.fluid_sim.dens_2.set_value(Store.fluid_sim.IX(x,y), d2 - diff)
 			
 				
