@@ -14,6 +14,8 @@ var force = 5.0
 var source = 100.0
 var dvel = true
 
+var use_3d_hud = false; # bbuggy atm due to gdscript bugs
+
 var states = [
 	load("res://player_default_state.gd").new(),
 	load("res://player_build_state.gd").new()
@@ -26,6 +28,8 @@ func _ready():
 	set_process_input(true);
 	
 	hud.fan_button.connect("pressed", Callable(self, "on_fan_pressed"))
+	if (use_3d_hud):
+		hud.set_visible(false);
 
 	for s in states:
 		s.player = self

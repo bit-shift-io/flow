@@ -1,20 +1,27 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://game.gd" type="Script" id=1]
 [ext_resource path="res://cell.tscn" type="PackedScene" id=2]
 [ext_resource path="res://density_spawn.tscn" type="PackedScene" id=3]
+[ext_resource path="res://gui_panel_3d.tscn" type="PackedScene" id=4]
 
 [sub_resource type="StandardMaterial3D" id=1]
 shading_mode = 0
 albedo_color = Color( 0.0352941, 0.686275, 0.835294, 1 )
+refraction_enabled = false
+detail_enabled = false
 
 [sub_resource type="StandardMaterial3D" id=2]
 shading_mode = 0
 albedo_color = Color( 0.976471, 0.00392157, 0.00392157, 1 )
+refraction_enabled = false
+detail_enabled = false
 
 [sub_resource type="StandardMaterial3D" id=3]
 shading_mode = 0
 albedo_color = Color( 0, 0, 1, 1 )
+refraction_enabled = false
+detail_enabled = false
 
 [node name="Map" type="Node3D"]
 script = ExtResource( 1 )
@@ -52,3 +59,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0 )
 
 [node name="DensitySpawn1" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0 )
+
+[node name="GUIPanel3D" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 4, 0 )

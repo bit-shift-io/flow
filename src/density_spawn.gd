@@ -12,6 +12,9 @@ func _ready():
 	pass # Replace with function body.
 
 func _process(delta):
+	if (!Store.fluid_sim_renderer):
+		return;
+		
 	var gs = Store.fluid_sim_renderer.world_to_grid_space(global_transform.origin)
 	
 	if (team == 0):
