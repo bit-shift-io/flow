@@ -1,5 +1,6 @@
 #include "fluid_solver.h"
 #include "globals.h"
+#include "core/os/os.h"
 
 // i = x, j = y
 #define IX(i,j) ((i)+(N+2)*(j))
@@ -123,11 +124,21 @@ void FluidSolver::dump_array(int N, Ref<FloatArray> x) {
 }
 
 void FluidSolver::density_step(int N, Ref<FloatArray> x, Ref<FloatArray> x0, Ref<FloatArray> u, Ref<FloatArray> v, float diff, float dt) {
+	uint64_t ticks_from = OS::get_singleton()->get_ticks_usec();
+
 	dens_step(N, x->ptrw(), x0->ptrw(), u->ptrw(), v->ptrw(), diff, dt);
+
+	uint64_t ticks_elapsed = OS::get_singleton()->get_ticks_usec() - ticks_from;
+	print_line("density_step (total " + rtos(ticks_elapsed / 1000000.0) + "ms): ");
 }
 
 void FluidSolver::velocity_step(int N, Ref<FloatArray> u, Ref<FloatArray> v, Ref<FloatArray> u0, Ref<FloatArray> v0, float visc, float dt) {
+	uint64_t ticks_from = OS::get_singleton()->get_ticks_usec();
+
 	vel_step(N, u->ptrw(), v->ptrw(), u0->ptrw(), v0->ptrw(), visc, dt);
+
+	uint64_t ticks_elapsed = OS::get_singleton()->get_ticks_usec() - ticks_from;
+	print_line("velocity_step (total " + rtos(ticks_elapsed / 1000000.0) + "ms): ");
 }
 
 void FluidSolver::_bind_methods() {

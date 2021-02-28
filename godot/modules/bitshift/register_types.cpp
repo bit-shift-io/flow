@@ -6,6 +6,7 @@
 #include "fluid_solver.h"
 #include "ut.h"
 #include "float_array.h"
+#include "arrow.h"
 
 static Vector<Variant> singletons;
 
@@ -30,6 +31,7 @@ void register_bitshift_types() {
     ClassDB::register_class<FluidSolver>();
     ClassDB::register_class<FloatArray>();
     ClassDB::register_class<BUt>();
+    ClassDB::register_class<Arrow>();
     
     //instance_singleton<Ut>("Ut");
 }
