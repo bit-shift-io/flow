@@ -129,7 +129,7 @@ void FluidSolver::density_step(int N, Ref<FloatArray> x, Ref<FloatArray> x0, Ref
 	dens_step(N, x->ptrw(), x0->ptrw(), u->ptrw(), v->ptrw(), diff, dt);
 
 	uint64_t ticks_elapsed = OS::get_singleton()->get_ticks_usec() - ticks_from;
-	print_line("density_step (total " + rtos(ticks_elapsed / 1000000.0) + "ms): ");
+	print_line("density_step (total " + rtos(ticks_elapsed / 1000.0) + "ms): ");
 }
 
 void FluidSolver::velocity_step(int N, Ref<FloatArray> u, Ref<FloatArray> v, Ref<FloatArray> u0, Ref<FloatArray> v0, float visc, float dt) {
@@ -138,7 +138,7 @@ void FluidSolver::velocity_step(int N, Ref<FloatArray> u, Ref<FloatArray> v, Ref
 	vel_step(N, u->ptrw(), v->ptrw(), u0->ptrw(), v0->ptrw(), visc, dt);
 
 	uint64_t ticks_elapsed = OS::get_singleton()->get_ticks_usec() - ticks_from;
-	print_line("velocity_step (total " + rtos(ticks_elapsed / 1000000.0) + "ms): ");
+	print_line("velocity_step (total " + rtos(ticks_elapsed / 1000.0) + "ms): ");
 }
 
 void FluidSolver::_bind_methods() {

@@ -9,6 +9,7 @@
 
 extends Node
 
+var renderer = FluidRenderer.new();
 var cells;
 
 func create_2d_instance(width, height, scene, parent):
@@ -47,18 +48,21 @@ func world_to_grid_space(pos: Vector3):
 	
 		
 func draw_velocity():
-	var N = Store.fluid_sim.N
-	var h = 1.0 / N
 	var velocityScale = 10.0;
+	renderer.draw_velocity(Store.fluid_sim.N, cells, Store.fluid_sim.u, Store.fluid_sim.v, velocityScale);
+	
+	#var N = Store.fluid_sim.N
+	#var h = 1.0 / N
+	#var velocityScale = 10.0;
 
-	for i in range(1, N + 1):
-		for j in range(1, N + 1):			
-			var cell = cells[j][i];
-			var vel = Store.fluid_sim.get_velocity(i, j)
-			var u_val = vel.x
-			var v_val = vel.y
-			
-			cell.set_velocity(Vector3(u_val * velocityScale, 0, -v_val * velocityScale));
+	#for i in range(1, N + 1):
+	#	for j in range(1, N + 1):			
+	#		var cell = cells[j][i];
+	#		var vel = Store.fluid_sim.get_velocity(i, j)
+	#		var u_val = vel.x
+	#		var v_val = vel.y
+	#		
+	#		cell.set_velocity(Vector3(u_val * velocityScale, 0, -v_val * velocityScale));
 	
 func draw_density():
 	var N = Store.fluid_sim.N

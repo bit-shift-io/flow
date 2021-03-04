@@ -8,32 +8,28 @@ var pressureAsHeight = true; # show pressure as height
 var velocity = Vector3(0, 0, 0);
 
 func set_velocity(v):
-	if (v == velocity):
-		return;
+	#if (v == velocity):
+	#	return;
 		
-	arrow.set_velocity(velocity);
-		
-	velocity = v;
-	#geom.clear();
-	#geom.begin(Mesh.PRIMITIVE_LINES, null);
-	#geom.add_vertex(Vector3(0,0,0));
-	#geom.add_vertex(velocity);
-	#geom.end();
+	#velocity = v;
+	arrow.set_velocity(v);
+
 	
 func set_density(d):
-	var new_d = d; #max(d, 0.2);
-	if (new_d == box.size.y):
-		return;
+	#var new_d = d; #max(d, 0.2);
+	#if (new_d == box.size.y):
+	#	return;
 		
 	#if (new_d <= 0.0):
 	#	box.visible = false;
 	#	return;
 
-	box.visible = true;
+	#box.visible = true;
 	
 	if (pressureAsHeight):
-		box.size.y = new_d * 0.5;
-		box.transform.origin = Vector3(0.0, new_d * 0.25, 0.0); # raise so bottom of box is at zero
+		# scale y axis
+		box.transform.basis.y.y = d * 0.5# .set_axis(1, box.transform.basis.get_axis(1) * new_d * 0.5)
+		box.transform.origin = Vector3(0.0, d * 0.25, 0.0); # raise so bottom of box is at zero
 	
 
 func set_color(col):

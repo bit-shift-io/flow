@@ -9,11 +9,12 @@ refraction_enabled = true
 refraction_scale = 0.05
 refraction_texture_channel = 0
 
-[node name="Arrow" type="Node3D"]
+[node name="Arrow" type="Arrow3D"]
 script = ExtResource( 1 )
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.25 )
+visible = false
 size = Vector3( 0.1, 0.1, 0.5 )
 material = SubResource( 1 )
 script = null
