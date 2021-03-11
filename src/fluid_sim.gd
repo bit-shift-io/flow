@@ -13,7 +13,7 @@ var dens_prev: FloatArray
 var dens_2: FloatArray
 var dens_prev_2: FloatArray
 
-var N = 25
+var N = 15
 var size = N + 2
 
 var dt = 2 # rate of simulation

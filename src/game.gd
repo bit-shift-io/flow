@@ -20,7 +20,7 @@ func _ready():
 	Store.game = self
 	Store.map = self
 	
-	var N = 15
+	var N = 25
 	var size = N + 2
 	base.size.x = float(size) + 1.0;
 	base.size.z = float(size) + 1.0;
