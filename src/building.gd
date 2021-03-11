@@ -1,6 +1,6 @@
 extends Node3D
 
-var force = 5
+var force = 10
 
 @onready var box: CSGBox3D = $CSGBox3D2;
 

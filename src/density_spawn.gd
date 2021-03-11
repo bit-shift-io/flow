@@ -1,7 +1,9 @@
 extends Node3D
 
-@export var team: int = 0
-@export var rate: int = 10
+#@export 
+var team: int = 0
+#@export 
+var rate: int = 10
 
 func _ready():
 	# hack because export isnt working in gdscript yet!

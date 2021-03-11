@@ -14,7 +14,7 @@ var uniformForce = Vector2(0.0, 0.0); # initial uniform force
 var cell_scene = load("res://cell.tscn")
 @onready var base: CSGBox3D = $"Base" #get_node("Base");
 			
-var collision_rate = 10
+var collision_rate = 100
 
 func _ready():
 	Store.game = self
@@ -100,6 +100,8 @@ func greater_then(x, y, d1, d2, delta):
 		
 # erode/disolve each other equally
 # notes: should this happen over time?
+# I think this needs to take into account velocity somehow!
+# who ever is being pushed into is given some sort of advantage based on the velocity of the push
 func erode(x, y, d1, d2, delta):
 	var diff = d2 - d1
 	diff = diff * delta * collision_rate
