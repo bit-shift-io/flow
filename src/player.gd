@@ -28,6 +28,7 @@ func _ready():
 	set_process_input(true);
 	
 	hud.fan_button.connect("pressed", Callable(self, "on_fan_pressed"))
+	hud.spawn_button.connect("pressed", Callable(self, "on_spawn_pressed"))
 	if (use_3d_hud):
 		hud.set_visible(false);
 
@@ -67,5 +68,10 @@ func _input(event):
 
 func on_fan_pressed():
 	set_state(find_state("player_build_state"))
+	
+func on_spawn_pressed():
+	print("TODO: spawn a pressure wave/bomb");
+	#set_state(find_state("player_build_state"))
+	return
 	
 	

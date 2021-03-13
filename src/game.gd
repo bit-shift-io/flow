@@ -46,6 +46,9 @@ func _process(delta):
 	for p in Store.players:
 		p.process(delta)
 		
+		
+	Store.fluid_sim.apply_density_to_velocity_step(delta)
+	
 	Store.fluid_sim.velocity_step(delta)
 	
 	# move each team density through the velocity field

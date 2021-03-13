@@ -21,6 +21,7 @@ var diff = 0.0
 var visc = 0.0
 var force = 5.0
 	
+var density_viscosity = 0.01 # how fast the density causes changes in velocity field
 
 # i = x, j = y
 func IX(i,j):
@@ -85,6 +86,54 @@ func create_arr(width, height):
 	p.resize(sz);
 	p.set_all(0.0);
 	return p;
+	
+	
+func apply_density_to_velocity_step(delta):
+	apply_density_to_velocity_step_internal(dens, delta)
+	apply_density_to_velocity_step_internal(dens_2, delta)
+	
+	
+func apply_density_to_velocity_step_internal(density, delta):
+	# density wants to move from high pressure (Density) to low
+	# so update the velocity field based on the density fields
+	for y in range(1, N):
+		for x in range(1, N):
+			
+			# get density of current cell and the cell
+			# in each direction
+			var d = density.get_value(IX(x,y));
+			var d_up = density.get_value(IX(x,y - 1));
+			var d_down = density.get_value(IX(x,y + 1));
+			var d_left = density.get_value(IX(x - 1,y));
+			var d_right = density.get_value(IX(x + 1,y));
+			
+			#if (d!=0):
+			#	print_debug("yo");
+				
+			# compute a delta between each cell density
+			var dd_left = d_left - d;
+			var dd_right = d - d_right;
+			
+			var dd_up = d_up - d;
+			var dd_down = d - d_down;
+			
+			# merge the directional deltas into a single force/direction
+			var du = dd_left + dd_right;
+			var dv = dd_up + dd_down;
+			
+			# add to the existing force field
+			# we should add an "add_value" function
+			var existing_u = u.get_value(IX(x,y))
+			var existing_v = v.get_value(IX(x,y))
+			
+			var new_u = existing_u + (du * density_viscosity * delta * dt);
+			var new_v = existing_v + (dv * density_viscosity * delta * dt);
+			
+			u.set_value(IX(x,y), new_u)
+			v.set_value(IX(x,y), new_v)
+			pass;
+			
+	return;
 	
 func velocity_step(delta):
 	solver.velocity_step(N, u, v, u_prev, v_prev, visc, delta * dt)

@@ -45,8 +45,10 @@ script = null
 
 [node name="DensitySpawn0" type="Node3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 0 )
+visible = false
 script = ExtResource( 4 )
 
 [node name="DensitySpawn1" type="Node3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 0 )
+visible = false
 script = ExtResource( 4 )

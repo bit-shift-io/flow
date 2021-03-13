@@ -1,5 +1,6 @@
 extends Control
 
+@onready var spawn_button = $SpawnButton
 @onready var fan_button = $FanButton
 @onready var debug_label = $DebugLabel
 

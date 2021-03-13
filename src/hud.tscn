@@ -18,6 +18,9 @@ offset_bottom = 267.0
 toggle_mode = true
 text = "Fan"
 script = null
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="DebugLabel" type="Label" parent="."]
 offset_left = 28.0
@@ -27,6 +30,19 @@ offset_bottom = 129.5
 text = "FPS: x
 "
 structured_text_bidi_override_options = [  ]
+script = null
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpawnButton" type="Button" parent="."]
+offset_left = 29.5
+offset_top = 287.0
+offset_right = 119.5
+offset_bottom = 320.0
+toggle_mode = true
+text = "Spawn
+"
 script = null
 __meta__ = {
 "_edit_use_anchors_": false

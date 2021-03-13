@@ -9,7 +9,7 @@ var mx = 0.0
 var my = 0.0
 var mouse_down = [false, false]
 var force = 5.0
-var source = 100.0
+var source = 10.0
 var dvel = true
 var density_dst = 0
 

@@ -17,6 +17,9 @@ func _process(delta):
 	if (!Store.fluid_sim_renderer):
 		return;
 		
+	if (!is_visible_in_tree()):
+		return;
+		
 	var gs = Store.fluid_sim_renderer.world_to_grid_space(global_transform.origin)
 	
 	if (team == 0):
