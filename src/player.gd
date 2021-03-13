@@ -1,6 +1,7 @@
 extends Node
 
-var fan_building_template = load("res://building.tscn")
+var turbine_building_template = load("res://building_turbine.tscn")
+var spawn_building_template = load("res://building_spawn.tscn")
 
 @onready var cursor = $Cursor
 @onready var hud = $HUD
@@ -27,7 +28,7 @@ var prev_state
 func _ready():
 	set_process_input(true);
 	
-	hud.fan_button.connect("pressed", Callable(self, "on_fan_pressed"))
+	hud.fan_button.connect("pressed", Callable(self, "on_turbine_pressed"))
 	hud.spawn_button.connect("pressed", Callable(self, "on_spawn_pressed"))
 	if (use_3d_hud):
 		hud.set_visible(false);
@@ -66,12 +67,15 @@ func _input(event):
 	current_state.input(event)
 	
 
-func on_fan_pressed():
-	set_state(find_state("player_build_state"))
+func on_turbine_pressed():
+	var s = find_state("player_build_state")
+	s.building_template = turbine_building_template
+	s.hud_button = hud.fan_button
+	set_state(s)
 	
 func on_spawn_pressed():
-	print("TODO: spawn a pressure wave/bomb");
-	#set_state(find_state("player_build_state"))
-	return
-	
+	var s = find_state("player_build_state")
+	s.building_template = spawn_building_template
+	s.hud_button = hud.spawn_button
+	set_state(s)
 	

@@ -18,6 +18,7 @@ func _process(delta):
 	# TODO: needs work!
 	Store.fluid_sim.set_velocity(gs, Vector2(-vel.x, vel.z) * force * delta)
 	
-	life -= delta
-	if (life <= 0):
-		self.queue_free();
+	if (Store.buildings_are_temporary):
+		life -= delta
+		if (life <= 0):
+			self.queue_free();

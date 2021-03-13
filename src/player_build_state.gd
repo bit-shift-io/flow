@@ -3,11 +3,17 @@ extends Node
 var player
 var name = "player_build_state"
 
+var building_template
+var hud_button
+
 var building
 var rotating_building = false
 
 func enter():
-	building = player.fan_building_template.instance()
+	if (!building_template):
+		return
+		
+	building = building_template.instance()
 	player.cursor.add_child(building)
 	pass
 
@@ -16,7 +22,7 @@ func exit():
 		player.cursor.remove_child(building)
 		building.queue_free()
 		building = null
-		player.hud.fan_button.pressed = false
+		hud_button.pressed = false
 		
 	pass
 
@@ -53,8 +59,14 @@ func confirm_building_position():
 	Store.map.add_child(building)
 	building.transform = xform
 	
+	# if the building doesn't care about rotation, then we are done!
+	var needs_rotation_when_building = building.needs_rotation_when_building;
+	if (!needs_rotation_when_building):
+		confirm_building_rotation();
+		
+	
 func confirm_building_rotation():
-	player.hud.fan_button.pressed = false
+	hud_button.pressed = false
 	var xform = building.global_transform
 	Store.buildings.append(building)
 	building.spawn(xform)
