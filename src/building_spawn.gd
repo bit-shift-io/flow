@@ -2,14 +2,11 @@ extends Node3D
 
 var needs_rotation_when_building = false
 
-#@export 
+
 var team: int = 0
-#@export 
 var rate: int = 10
 
 var life = 10.0
-
-@onready var box: CSGBox3D = $CSGBox3D2;
 
 func _ready():
 	set_process(false)

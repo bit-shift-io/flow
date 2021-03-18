@@ -6,8 +6,6 @@
 shading_mode = 0
 albedo_color = Color( 0, 0.952941, 1, 1 )
 detail_enabled = true
-detail_blend_mode = 0
-detail_uv_layer = 0
 
 [sub_resource type="StandardMaterial3D" id=2]
 shading_mode = 0

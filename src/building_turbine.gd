@@ -1,5 +1,6 @@
 extends Node3D
 
+var needs_rotation_when_building = true
 var force = 5
 var life = 10.0
 

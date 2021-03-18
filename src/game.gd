@@ -59,9 +59,10 @@ func _process(delta):
 	resolve_collisions(delta)
 	
 	# draw density
-	var dvel = Store.players[0].dvel
-	if dvel:
-		Store.fluid_sim_renderer.draw_velocity();
+	if (Store.players.size() > 0):
+		var dvel = Store.players[0].dvel
+		if dvel:
+			Store.fluid_sim_renderer.draw_velocity();
 
 	Store.fluid_sim_renderer.draw_density();
 	

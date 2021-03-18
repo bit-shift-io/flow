@@ -1,7 +1,9 @@
 extends Node
 
 @onready var turbine_building_template = load("res://building_turbine.tscn")
-@onready var spawn_building_template = load("res://building_spawn.tscn")
+
+# something wrong with the spawn causing the map to go white! TODO:
+@onready var spawn_building_template# = load("res://building_spawn.tscn")
 
 @onready var cursor = $Cursor
 @onready var hud = $HUD
@@ -17,7 +19,7 @@ var dvel = true
 
 var use_3d_hud = false; # bbuggy atm due to gdscript bugs
 
-var states = [
+@onready var states = [
 	load("res://player_default_state.gd").new(),
 	load("res://player_build_state.gd").new()
 ]
@@ -36,7 +38,8 @@ func _ready():
 	for s in states:
 		s.player = self
 		
-	set_state(states[0])
+	if (states.size() > 0):
+		set_state(states[0])
 
 func set_state(s):
 	prev_state = current_state
@@ -52,7 +55,8 @@ func find_state(n):
 			return s
 
 func process(delta):
-	current_state.process(delta)
+	if (current_state):
+		current_state.process(delta)
 	
 func update_cursor_transform():
 	var camera = get_viewport().get_camera()
@@ -64,7 +68,8 @@ func update_cursor_transform():
 		
 			
 func _input(event):
-	current_state.input(event)
+	if (current_state):
+		current_state.input(event)
 	
 
 func on_turbine_pressed():

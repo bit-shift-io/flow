@@ -6,8 +6,6 @@
 shading_mode = 0
 albedo_color = Color( 0.898039, 0, 1, 1 )
 detail_enabled = true
-detail_blend_mode = 0
-detail_uv_layer = 0
 
 [node name="BuildingSpawn" type="Node3D"]
 script = ExtResource( 1 )
