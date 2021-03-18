@@ -1,7 +1,7 @@
 extends Node
 
-var turbine_building_template = load("res://building_turbine.tscn")
-var spawn_building_template = load("res://building_spawn.tscn")
+@onready var turbine_building_template = load("res://building_turbine.tscn")
+@onready var spawn_building_template = load("res://building_spawn.tscn")
 
 @onready var cursor = $Cursor
 @onready var hud = $HUD
