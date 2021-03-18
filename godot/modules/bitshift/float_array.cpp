@@ -13,6 +13,10 @@ void FloatArray::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_all"), &FloatArray::set_all);
 }
 
+int FloatArray::size() {
+    return array.size();
+}
+
 Error FloatArray::resize(int p_size) {
     return array.resize(p_size);
 }
@@ -33,4 +37,15 @@ void FloatArray::set_all(float value) {
 
 float *FloatArray::ptrw() {
     return array.ptrw();
+}
+
+void FloatArray::copy(Ref<FloatArray> other) {
+    if (other->size() != size()) {
+        print_line("[FloatArray::copy] size mismatch");
+        return;
+    }
+
+    for (auto i = 0; i < array.size(); ++i) {
+        array.set(i, other->get_value(i));
+    }
 }

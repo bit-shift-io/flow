@@ -19,6 +19,7 @@ protected:
            
 public:
 
+    int size();
     Error resize(int p_size);
     float get_value(int index);
     void set_value(int index, float value);
@@ -26,6 +27,8 @@ public:
     void set_all(float value);
 
     float *ptrw();
+
+    void copy(Ref<FloatArray> other);
 
 	FloatArray();
 	~FloatArray();            

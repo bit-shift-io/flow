@@ -1,6 +1,10 @@
 extends Node
 
-var solver = FluidSolver.new();
+# set this to false and you will get the old solver
+# set it to true and we get the experimental fabian solver
+var using_fab_solver = true;
+
+var solver = FluidSolverFab.new() if using_fab_solver else FluidSolver.new();
 var u: FloatArray
 var u_prev: FloatArray
 var v: FloatArray

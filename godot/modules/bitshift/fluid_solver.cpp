@@ -10,7 +10,7 @@
 
 
 
-void dump_array(int N, float * x) {
+static void dump_array(int N, float * x) {
 	int i,j;
 	for ( i=1 ; i<=N ; i++ ) { 
 		String s = String::num(i) + "| ";
@@ -24,13 +24,13 @@ void dump_array(int N, float * x) {
 	DEBUG_PRINT("");
 }
 
-void add_source ( int N, float * x, float * s, float dt )
+static void add_source ( int N, float * x, float * s, float dt )
 {
 	int i, size=(N+2)*(N+2);
 	for ( i=0 ; i<size ; i++ ) x[i] += dt*s[i];
 }
 
-void set_bnd ( int N, int b, float * x )
+static void set_bnd ( int N, int b, float * x )
 {
 	int i;
 
@@ -46,7 +46,7 @@ void set_bnd ( int N, int b, float * x )
 	x[IX(N+1,N+1)] = 0.5f*(x[IX(N,N+1)]+x[IX(N+1,N)]);
 }
 
-void lin_solve ( int N, int b, float * x, float * x0, float a, float c )
+static void lin_solve ( int N, int b, float * x, float * x0, float a, float c )
 {
 	int i, j, k;
 
@@ -58,13 +58,13 @@ void lin_solve ( int N, int b, float * x, float * x0, float a, float c )
 	}
 }
 
-void diffuse ( int N, int b, float * x, float * x0, float diff, float dt )
+static void diffuse ( int N, int b, float * x, float * x0, float diff, float dt )
 {
 	float a=dt*diff*N*N;
 	lin_solve ( N, b, x, x0, a, 1+4*a );
 }
 
-void advect ( int N, int b, float * d, float * d0, float * u, float * v, float dt )
+static void advect ( int N, int b, float * d, float * d0, float * u, float * v, float dt )
 {
 	int i, j, i0, j0, i1, j1;
 	float x, y, s0, t0, s1, t1, dt0;
@@ -81,7 +81,7 @@ void advect ( int N, int b, float * d, float * d0, float * u, float * v, float d
 	set_bnd ( N, b, d );
 }
 
-void project ( int N, float * u, float * v, float * p, float * div )
+static void project ( int N, float * u, float * v, float * p, float * div )
 {
 	int i, j;
 
@@ -100,14 +100,14 @@ void project ( int N, float * u, float * v, float * p, float * div )
 	set_bnd ( N, 1, u ); set_bnd ( N, 2, v );
 }
 
-void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt )
+static void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt )
 {
 	add_source ( N, x, x0, dt );
 	SWAP ( x0, x ); diffuse ( N, 0, x, x0, diff, dt );
 	SWAP ( x0, x ); advect ( N, 0, x, x0, u, v, dt );
 }
 
-void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc, float dt )
+static void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc, float dt )
 {
 	add_source ( N, u, u0, dt ); add_source ( N, v, v0, dt );
 	SWAP ( u0, u ); diffuse ( N, 1, u, u0, visc, dt );

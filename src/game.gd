@@ -66,9 +66,10 @@ func _process(delta):
 	Store.fluid_sim_renderer.draw_density();
 	
 	# clear density and velocity ready for next frame
-	Store.fluid_sim.clear_prev_velocity()
-	Store.fluid_sim.clear_prev_density()
-	Store.fluid_sim.clear_prev_density_2()
+	if (!Store.fluid_sim.using_fab_solver):
+		Store.fluid_sim.clear_prev_velocity()
+		Store.fluid_sim.clear_prev_density()
+		Store.fluid_sim.clear_prev_density_2()
 	
 # TODO: move to C++?
 func resolve_collisions(delta):
