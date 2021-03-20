@@ -4,7 +4,7 @@ var needs_rotation_when_building = false
 
 
 var team: int = 0
-var rate: int = 10
+var rate: int = 100
 
 var life = 10.0
 

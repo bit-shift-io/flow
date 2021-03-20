@@ -93,8 +93,8 @@ func create_arr(width, height):
 	
 	
 func apply_density_to_velocity_step(delta):
-	apply_density_to_velocity_step_internal(dens, delta)
-	apply_density_to_velocity_step_internal(dens_2, delta)
+	apply_density_to_velocity_step_internal(dens_prev, delta)
+	apply_density_to_velocity_step_internal(dens_prev_2, delta)
 	
 	
 func apply_density_to_velocity_step_internal(density, delta):
@@ -111,8 +111,8 @@ func apply_density_to_velocity_step_internal(density, delta):
 			var d_left = density.get_value(IX(x - 1,y));
 			var d_right = density.get_value(IX(x + 1,y));
 			
-			#if (d!=0):
-			#	print_debug("yo");
+			if (d!=0):
+				print_debug("yo");
 				
 			# compute a delta between each cell density
 			var dd_left = d_left - d;
@@ -127,14 +127,14 @@ func apply_density_to_velocity_step_internal(density, delta):
 			
 			# add to the existing force field
 			# we should add an "add_value" function
-			var existing_u = u.get_value(IX(x,y))
-			var existing_v = v.get_value(IX(x,y))
+			var existing_u = u_prev.get_value(IX(x,y))
+			var existing_v = v_prev.get_value(IX(x,y))
 			
 			var new_u = existing_u + (du * density_viscosity * delta * dt);
 			var new_v = existing_v + (dv * density_viscosity * delta * dt);
 			
-			u.set_value(IX(x,y), new_u)
-			v.set_value(IX(x,y), new_v)
+			u_prev.set_value(IX(x,y), new_u)
+			v_prev.set_value(IX(x,y), new_v)
 			pass;
 			
 	return;
