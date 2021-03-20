@@ -11,7 +11,7 @@ var mouse_down = [false, false]
 var force = 5.0
 var source = 10.0
 var dvel = true
-var density_dst = 0
+
 
 func enter():
 	pass
@@ -46,7 +46,7 @@ func input(event):
 		dvel = !dvel;
 		
 	if Input.is_action_just_pressed("toggle_density"):
-		density_dst = (density_dst + 1) % 2
+		player.density_dst = (player.density_dst + 1) % 2
 		
 	pass
 		
@@ -78,7 +78,7 @@ func process(delta):
 		Store.fluid_sim.set_prev_velocity(Vector2(i, j), Vector2(fx, fy))
 		
 	if mouse_down[1]:
-		if (density_dst == 0):
+		if (player.density_dst == 0):
 			Store.fluid_sim.set_prev_density(i, j, source)
 		else:
 			Store.fluid_sim.set_prev_density_2(i, j, source)

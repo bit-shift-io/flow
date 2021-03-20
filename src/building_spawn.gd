@@ -14,14 +14,18 @@ func _ready():
 func spawn(xform):
 	global_transform = xform
 	set_process(true)
+	team = Store.players[0].density_dst
+	return
 
 func _process(delta):
 	var gs = Store.fluid_sim_renderer.world_to_grid_space(global_transform.origin)
-	
+		
 	if (team == 0):
-		Store.fluid_sim.set_prev_density(gs.x, gs.y, delta * rate)
+		var d = Store.fluid_sim.dens_prev.get_value(Store.fluid_sim.IX(gs.x, gs.y));
+		Store.fluid_sim.set_prev_density(gs.x, gs.y, d + (delta * rate))
 	else:
-		Store.fluid_sim.set_prev_density_2(gs.x, gs.y, delta * rate)
+		var d = Store.fluid_sim.dens_prev_2.get_value(Store.fluid_sim.IX(gs.x, gs.y));
+		Store.fluid_sim.set_prev_density_2(gs.x, gs.y, d + (delta * rate))
 
 
 	if (Store.buildings_are_temporary):

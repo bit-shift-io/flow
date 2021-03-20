@@ -19,6 +19,8 @@ var dvel = true
 
 var use_3d_hud = false; # bbuggy atm due to gdscript bugs
 
+var density_dst = 0
+
 @onready var states = [
 	load("res://player_default_state.gd").new(),
 	load("res://player_build_state.gd").new()
@@ -29,6 +31,8 @@ var prev_state
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	set_process_input(true);
+	
+	#spawn_building_template = load("res://building_spawn.tscn")
 	
 	hud.fan_button.connect("pressed", Callable(self, "on_turbine_pressed"))
 	hud.spawn_button.connect("pressed", Callable(self, "on_spawn_pressed"))

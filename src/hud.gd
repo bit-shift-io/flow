@@ -10,3 +10,4 @@ func _ready():
 	
 func _process(delta):
 	debug_label.text = "FPS: %d\nPROCESS: %fms" % [Performance.get_monitor(Performance.TIME_FPS), Performance.get_monitor(Performance.TIME_PROCESS) * 1000]
+	debug_label.text += "\ndensity dest: %d" % [Store.players[0].density_dst]
