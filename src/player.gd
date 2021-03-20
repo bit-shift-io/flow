@@ -3,7 +3,7 @@ extends Node
 @onready var turbine_building_template = load("res://building_turbine.tscn")
 
 # something wrong with the spawn causing the map to go white! TODO:
-@onready var spawn_building_template# = load("res://building_spawn.tscn")
+@onready var spawn_building_template = load("res://building_spawn.tscn")
 
 @onready var cursor = $Cursor
 @onready var hud = $HUD

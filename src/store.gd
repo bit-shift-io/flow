@@ -12,7 +12,7 @@ var game
 var map # map root node
 
 # experimenting with temporary buildings to make things feel more "fluid"
-var buildings_are_temporary = true
+var buildings_are_temporary = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

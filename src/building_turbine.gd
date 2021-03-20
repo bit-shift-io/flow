@@ -17,7 +17,10 @@ func _process(delta):
 	var gs = Store.fluid_sim_renderer.world_to_grid_space(global_transform.origin)
 	var vel = global_transform.basis.z
 	# TODO: needs work!
-	Store.fluid_sim.set_velocity(gs, Vector2(-vel.x, vel.z) * force * delta)
+	if (Store.fluid_sim.using_fab_solver):
+		Store.fluid_sim.set_prev_velocity(gs, Vector2(-vel.x, vel.z) * force * delta)
+	else:
+		Store.fluid_sim.set_velocity(gs, Vector2(-vel.x, vel.z) * force * delta)
 	
 	if (Store.buildings_are_temporary):
 		life -= delta
