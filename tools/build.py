@@ -67,6 +67,7 @@ def main():
     menu['a'] = ['All the things - Build data/exes, unit test then upload', 'all_the_things']
     menu['c'] = ['Engine Clean', 'engine_clean']
     menu['d'] = ['Install dependencies', 'install_dependencies']
+    menu['v'] = ['Get Vulkan libs (for macOS)', 'get_vulkan_libs']
 
     print('\n********************************************')
     print(config['args'])
@@ -114,7 +115,22 @@ def install_dependencies():
         run('brew install scons')
     else:
         log("OS not yet supported")
-        
+
+
+def get_vulkan_libs():
+    # just grab the vulkan libs for mac
+    # https://github.com/godotengine/godot/issues/47715#issuecomment-815556402
+    # destination: /path/to/Godot.app/Contents/Frameworks/
+    vulkan_sdk_version = "1.2.170.0"
+    run("""
+        curl -LO "https://sdk.lunarg.com/sdk/download/{0}/mac/vulkansdk-macos-{0}.dmg"
+        hdiutil attach "vulkansdk-macos-{0}.dmg"
+        cp "/Volumes/vulkansdk-macos-{0}/macOS/lib/libMoltenVK.dylib" {1}/godot/bin
+        cp -r "/Volumes/vulkansdk-macos-{0}/macOS/share/vulkan/icd.d" {1}/godot/bin/vulkan
+    """.format(vulkan_sdk_version, config['paths']['project']))
+    log("Done. Remember to edit the MoltenVK_icd.json to remove one ../ before commiting")
+    return
+
 
 def build_release_exes():
     log("build_release_exes")
