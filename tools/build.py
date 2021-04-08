@@ -128,7 +128,7 @@ def get_vulkan_libs():
         cp "/Volumes/vulkansdk-macos-{0}/macOS/lib/libMoltenVK.dylib" {1}/godot/bin
         cp -r "/Volumes/vulkansdk-macos-{0}/macOS/share/vulkan/icd.d" {1}/godot/bin/vulkan
     """.format(vulkan_sdk_version, config['paths']['project']))
-    log("Done. Remember to edit the MoltenVK_icd.json to remove one ../ before commiting")
+    log("Done. Now edit the library_path in MoltenVK_icd.json to ../../libMoltenVK.dylib")
     return
 
 

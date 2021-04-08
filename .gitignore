@@ -6,3 +6,4 @@ log.txt
 __pycache__
 .godot/
 *.dmg
+src/*.dylib
