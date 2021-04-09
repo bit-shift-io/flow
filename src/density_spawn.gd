@@ -1,11 +1,11 @@
 extends Node3D
 
-
 var needs_rotation_when_building = true
 
-#@export 
+@export 
 var team: int = 0
-#@export 
+
+@export 
 var rate: int = 20
 
 func _ready():

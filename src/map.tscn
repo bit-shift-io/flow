@@ -44,11 +44,10 @@ material = SubResource( 3 )
 script = null
 
 [node name="DensitySpawn0" type="Node3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 0 )
-visible = false
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -7.79373, 0, 0 )
 script = ExtResource( 4 )
 
 [node name="DensitySpawn1" type="Node3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 0 )
-visible = false
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 10.9457, 0, 0 )
 script = ExtResource( 4 )
+team = 1
